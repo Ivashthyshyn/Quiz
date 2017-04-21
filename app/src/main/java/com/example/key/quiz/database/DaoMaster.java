@@ -1,4 +1,4 @@
-package com.example.key.quiz;
+package com.example.key.quiz.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

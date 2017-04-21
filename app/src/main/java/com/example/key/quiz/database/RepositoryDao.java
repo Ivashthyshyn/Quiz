@@ -1,4 +1,4 @@
-package com.example.key.quiz;
+package com.example.key.quiz.database;
 
 import java.util.List;
 import android.database.Cursor;
@@ -49,7 +49,7 @@ public class RepositoryDao extends AbstractDao<Repository, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"REPOSITORY\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
                 "\"ANSWER\" TEXT NOT NULL ," + // 1: answer
-                "\"USER_REMOTE_ID\" INTEGER NOT NULL UNIQUE );"); // 2: userRemoteId
+                "\"USER_REMOTE_ID\" INTEGER NOT NULL );"); // 2: userRemoteId
     }
 
     /** Drops the underlying database table. */

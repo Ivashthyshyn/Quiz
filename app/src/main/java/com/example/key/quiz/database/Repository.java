@@ -1,11 +1,10 @@
-package com.example.key.quiz;
+package com.example.key.quiz.database;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
-import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 @Entity(active = true, nameInDb = "REPOSITORY")
 public class Repository {
@@ -16,7 +15,6 @@ public class Repository {
     private String answer;
 
     @NotNull
-    @Unique
     private Long userRemoteId;
 
     /** Used to resolve relations */

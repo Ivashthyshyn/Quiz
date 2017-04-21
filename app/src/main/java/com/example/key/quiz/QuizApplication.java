@@ -2,6 +2,9 @@ package com.example.key.quiz;
 
 import android.app.Application;
 
+import com.example.key.quiz.database.DaoMaster;
+import com.example.key.quiz.database.DaoSession;
+
 import org.greenrobot.greendao.database.Database;
 
 /**
