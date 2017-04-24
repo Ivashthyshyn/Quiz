@@ -9,7 +9,7 @@
     tools:context="com.example.key.quiz.TrialActivity">
 
     <TextView
-        android:id="@+id/question"
+        android:id="@+id/text_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"

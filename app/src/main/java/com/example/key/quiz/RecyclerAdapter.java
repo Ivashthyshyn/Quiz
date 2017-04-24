@@ -1,5 +1,6 @@
 package com.example.key.quiz;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,7 +38,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Answer
         public TextView text;
 
 
-        public AnswerViewHolder(View itemView, final AnswerClickListener clickListener) {
+        public AnswerViewHolder(final View itemView, final AnswerClickListener clickListener) {
             super(itemView);
             text = (TextView) itemView.findViewById(R.id.text_position);
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -45,6 +46,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Answer
                 public void onClick(View view) {
                     if (clickListener != null) {
                         clickListener.onAnswerClick(getAdapterPosition());
+                        text.setBackgroundColor(Color.RED);
                     }
                 }
             });

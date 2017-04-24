@@ -23,7 +23,7 @@ public class QuizApplication extends Application {
         daoSession = new DaoMaster(db).newSession();
     }
 
-    public DaoSession getDaoSession() {
+    public  DaoSession getDaoSession() {
         return daoSession;
     }
 }

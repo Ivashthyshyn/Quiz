@@ -8,20 +8,6 @@
     android:orientation="vertical"
     tools:context="com.example.key.quiz.TrialActivity">
 
-    <TextView
-        android:id="@+id/question"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginTop="26dp"
-        android:background="@drawable/rounded_button"
-        android:text="Question"
-        android:textColor="@android:color/background_light"
-        android:textSize="24sp" />
-
     <Button
         android:id="@+id/next_button"
         android:layout_width="wrap_content"
@@ -50,12 +36,13 @@
         android:text="@string/back"
         android:textColor="@android:color/background_light" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
+    <fragment
+        android:id="@+id/fragment"
+        android:name="com.example.key.quiz.FragmentRecycler"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/question"
+        android:layout_below="@+id/text_question"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="164dp" />
+        android:layout_marginTop="125dp" />
 
 </RelativeLayout>
