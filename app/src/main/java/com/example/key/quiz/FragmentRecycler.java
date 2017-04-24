@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.key.quiz.database.DaoSession;
-import com.example.key.quiz.database.QuestionDao;
 import com.example.key.quiz.database.Repository;
 import com.example.key.quiz.database.RepositoryDao;
 
@@ -27,7 +26,6 @@ import java.util.List;
 public class FragmentRecycler extends Fragment {
     public TextView textQuestion;
     public RecyclerView recyclerView;
-    private QuestionDao questionDao;
     private RepositoryDao repositoryDao;
     private Query<Repository> repositoryQuery;
     private RecyclerAdapter recyclerAdapter;
@@ -38,7 +36,6 @@ public class FragmentRecycler extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View fragmentRecycler = inflater.inflate(R.layout.fragment_recycleer,container,false);
-        textQuestion = (TextView)fragmentRecycler.findViewById(R.id.text_question);
         recyclerView = (RecyclerView)fragmentRecycler.findViewById(R.id.recycler_view);
         setUpViews();
         return fragmentRecycler;
@@ -50,9 +47,7 @@ public class FragmentRecycler extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         DaoSession daoSession = ((QuizApplication)getActivity().getApplication()).getDaoSession();
-        questionDao = daoSession.getQuestionDao();
         repositoryDao = daoSession.getRepositoryDao();
-        textQuestion.setText(questionDao.load(questionKey).getContent());
         // select answers with database
         repositoryQuery = repositoryDao.queryBuilder().where(RepositoryDao.Properties.UserRemoteId.eq(questionKey)).build();
         updateNotes();
@@ -65,7 +60,7 @@ public class FragmentRecycler extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerAdapter = new RecyclerAdapter(answerClickListener);
         recyclerView.setAdapter(recyclerAdapter);
-      //
+
     }
     private void updateNotes() {
         List<Repository> answer = repositoryQuery.list();
