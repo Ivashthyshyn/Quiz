@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.key.quiz.database.Repository;
+import com.example.key.quiz.database.Answer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +20,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Answer
      * List for answer
      */
 
-    private List<Repository> dataset;
+    private List<Answer> dataset;
 
     private AnswerClickListener clickListener;
 
     public interface AnswerClickListener {
-        void onAnswerClick(int position);
+        void onAnswerClick(long answer);
     }
 
 
@@ -46,7 +46,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Answer
                 public void onClick(View view) {
                     if (clickListener != null) {
                         clickListener.onAnswerClick(getAdapterPosition());
-                        text.setBackgroundColor(Color.RED);
+                        text.setBackgroundColor(Color.GREEN);
                     }
                 }
             });
@@ -55,15 +55,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Answer
 
     public RecyclerAdapter(AnswerClickListener clickListener) {
         this.clickListener = clickListener;
-        this.dataset = new ArrayList<Repository>();
+        this.dataset = new ArrayList<Answer>();
     }
 
-    public void setNotes(@NonNull List<Repository> notes) {
+    public void setNotes(@NonNull List<Answer> notes) {
         dataset = notes;
         notifyDataSetChanged();
     }
 
-    public Repository getRepository(int position) {
+    public Answer getRepository(int position) {
         return dataset.get(position);
     }
 
@@ -76,8 +76,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Answer
 
     @Override
     public void onBindViewHolder(RecyclerAdapter.AnswerViewHolder holder, int position) {
-        Repository repository = dataset.get(position);
-        holder.text.setText(repository.getAnswer());
+        Answer answer = dataset.get(position);
+        holder.text.setText(answer.getAnswers());
     }
     @Override
     public int getItemCount () {

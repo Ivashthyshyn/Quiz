@@ -1,4 +1,4 @@
-package com.example.key.quiz;
+package com.example.key.quiz.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,10 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.key.quiz.QuizApplication;
+import com.example.key.quiz.R;
+import com.example.key.quiz.RecyclerAdapter;
+import com.example.key.quiz.database.Answer;
+import com.example.key.quiz.database.AnswerDao;
 import com.example.key.quiz.database.DaoSession;
-import com.example.key.quiz.database.Repository;
-import com.example.key.quiz.database.RepositoryDao;
+import com.example.key.quiz.database.Question;
+import com.example.key.quiz.database.QuestionDao;
 
 import org.greenrobot.greendao.query.Query;
 
@@ -23,11 +29,12 @@ import java.util.List;
  * Created by Key on 24.04.2017.
  */
 
-public class FragmentRecycler extends Fragment {
+public class RecyclerFragment extends Fragment {
     public TextView textQuestion;
     public RecyclerView recyclerView;
-    private RepositoryDao repositoryDao;
-    private Query<Repository> repositoryQuery;
+    private AnswerDao answerDao;
+    private QuestionDao questionDao;
+    private Query<Answer> answerQuery;
     private RecyclerAdapter recyclerAdapter;
     private long questionKey = 1;
 
@@ -47,9 +54,10 @@ public class FragmentRecycler extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         DaoSession daoSession = ((QuizApplication)getActivity().getApplication()).getDaoSession();
-        repositoryDao = daoSession.getRepositoryDao();
+        answerDao = daoSession.getAnswerDao();
+        questionDao = daoSession.getQuestionDao();
         // select answers with database
-        repositoryQuery = repositoryDao.queryBuilder().where(RepositoryDao.Properties.UserRemoteId.eq(questionKey)).build();
+        answerQuery = answerDao.queryBuilder().where(AnswerDao.Properties.RemoutCommunicationId.eq(questionKey)).build();
         updateNotes();
     }
 
@@ -63,15 +71,19 @@ public class FragmentRecycler extends Fragment {
 
     }
     private void updateNotes() {
-        List<Repository> answer = repositoryQuery.list();
+        List<Answer> answer = answerQuery.list();
         recyclerAdapter.setNotes(answer);
     }
 
     RecyclerAdapter.AnswerClickListener answerClickListener = new  RecyclerAdapter.AnswerClickListener() {
         @Override
-        public void onAnswerClick(int position) {
-            Repository note = recyclerAdapter.getRepository(position);
-            Long noteId = note.getId();
+        public void onAnswerClick(long position) {
+            Question question = questionDao.load(1L);
+            long answerId = question.getRightAnswer();
+            if (position + 1 == answerId){
+                Toast.makeText(getActivity(),"Відповідь првильна",Toast.LENGTH_SHORT).show();
+            }
+
             // action for ButtonClick
 
 

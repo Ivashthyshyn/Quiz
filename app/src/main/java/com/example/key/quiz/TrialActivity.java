@@ -9,7 +9,11 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.example.key.quiz.Fragments.ButtonFragment;
+import com.example.key.quiz.Fragments.EditFragment;
+import com.example.key.quiz.Fragments.RecyclerFragment;
 import com.example.key.quiz.database.DaoSession;
+import com.example.key.quiz.database.Question;
 import com.example.key.quiz.database.QuestionDao;
 
 
@@ -17,12 +21,15 @@ public class TrialActivity extends AppCompatActivity {
     private QuestionDao questionDao;
     private TextView textQuestion;
     private FragmentManager fragmentManager;
-    private FragmentRecycler fragmentRecycler;
-    private FragmentEdit fragmentEdit;
+    private RecyclerFragment fragmentRecycler;
+    private ButtonFragment buttonFragment;
+    private EditFragment fragmentEdit;
     private FrameLayout container;
+    FragmentTransaction fragmentTransaction;
     // identifies the key questions and answers to them
     // тимчасова змінна
-    private long questionKey = 1;
+    private long questionId = 1;
+    private long questionType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,30 +38,32 @@ public class TrialActivity extends AppCompatActivity {
         // create daosession to access the database
         DaoSession daoSession = ((QuizApplication) getApplication()).getDaoSession();
         questionDao = daoSession.getQuestionDao();
-        // container fragments
         container = (FrameLayout)findViewById(R.id.container);
-        textQuestion = (TextView)findViewById(R.id.textQuestion);
-        fragmentRecycler = new FragmentRecycler();
-        fragmentEdit = new FragmentEdit();
+
+        fragmentRecycler = new RecyclerFragment();
+        fragmentEdit = new EditFragment();
+        buttonFragment = new ButtonFragment();
         fragmentManager = getSupportFragmentManager();
 
-
-            FragmentTransaction fragmentTransaction = fragmentManager
-                    .beginTransaction();
+        if (savedInstanceState == null) {
+            // при первом запуске программы
+            fragmentTransaction = fragmentManager.beginTransaction();
+            // добавляем в контейнер при помощи метода add()
             fragmentTransaction.add(R.id.container, fragmentRecycler);
             fragmentTransaction.commit();
+        }
+
+
+        updateFragment();
 
 
         Button nextButton = (Button)findViewById(R.id.next_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (questionKey < 5) {
-                    questionKey = questionKey + 1;
-                    FragmentTransaction fragmentTransaction = fragmentManager
-                            .beginTransaction();
-                    fragmentTransaction.replace(R.id.container, fragmentRecycler);
-                    fragmentTransaction.commit();
+                if (questionId < 3) {
+                    questionId = questionId + 1;
+                    updateFragment();
                 }
             }
         });
@@ -63,23 +72,36 @@ public class TrialActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (questionKey > 1) {
-                    questionKey = questionKey - 1;
-                    FragmentTransaction fragmentTransaction = fragmentManager
-                            .beginTransaction();
-                    fragmentTransaction.replace(R.id.container, fragmentEdit);
-                    fragmentTransaction.commit();
+                if (questionId > 1) {
+                    questionId = questionId - 1;
+                    updateFragment();
                 }
             }
         });
 
     }
 
+    private void updateFragment() {
+        Question question = questionDao.load(questionId);
+        questionType = question.getType();
+        textQuestion = (TextView)findViewById(R.id.textQuestion);
+        textQuestion.setText(question.getQuestions());
 
 
-
-
-
+        if(questionType == 1 ){
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.container, fragmentRecycler);
+            fragmentTransaction.commit();
+        }else if (questionType == 2){
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.container, fragmentEdit);
+            fragmentTransaction.commit();
+        }else if (questionType == 3){
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.container, buttonFragment);
+            fragmentTransaction.commit();
+        }
+    }
 
 
 }

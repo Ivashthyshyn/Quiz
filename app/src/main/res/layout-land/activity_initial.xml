@@ -10,7 +10,7 @@
     tools:context="com.example.key.quiz.InitialActivity">
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/startButton"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
