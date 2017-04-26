@@ -39,22 +39,21 @@ public class TrialActivity extends AppCompatActivity {
         DaoSession daoSession = ((QuizApplication) getApplication()).getDaoSession();
         questionDao = daoSession.getQuestionDao();
         container = (FrameLayout)findViewById(R.id.container);
-
+        textQuestion = (TextView)findViewById(R.id.textQuestion);
         fragmentRecycler = new RecyclerFragment();
         fragmentEdit = new EditFragment();
         buttonFragment = new ButtonFragment();
         fragmentManager = getSupportFragmentManager();
 
         if (savedInstanceState == null) {
-            // при первом запуске программы
             fragmentTransaction = fragmentManager.beginTransaction();
-            // добавляем в контейнер при помощи метода add()
             fragmentTransaction.add(R.id.container, fragmentRecycler);
             fragmentTransaction.commit();
         }
 
-
-        updateFragment();
+        Question question = questionDao.load(questionId);
+        questionType = question.getType();
+        textQuestion.setText(question.getQuestions());
 
 
         Button nextButton = (Button)findViewById(R.id.next_button);
@@ -84,7 +83,6 @@ public class TrialActivity extends AppCompatActivity {
     private void updateFragment() {
         Question question = questionDao.load(questionId);
         questionType = question.getType();
-        textQuestion = (TextView)findViewById(R.id.textQuestion);
         textQuestion.setText(question.getQuestions());
 
 

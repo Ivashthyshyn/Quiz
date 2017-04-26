@@ -62,4 +62,9 @@ public class EditFragment extends Fragment {
         answerDao = daoSession.getAnswerDao();
 
     }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 }

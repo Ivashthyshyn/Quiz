@@ -84,10 +84,12 @@ public class RecyclerFragment extends Fragment {
                 Toast.makeText(getActivity(),"Відповідь првильна",Toast.LENGTH_SHORT).show();
             }
 
-            // action for ButtonClick
-
-
         }
 
     };
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 }
