@@ -10,17 +10,16 @@ import android.widget.TextView;
 
 import com.example.key.quiz.database.Answer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AnswerViewHolder> {
     /**
-     * List for answer
+     * List for answerString
      */
 
-    private List<Answer> dataset;
+    private List<Answer> mAnswers;
 
     private AnswerClickListener clickListener;
 
@@ -38,7 +37,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Answer
         public TextView text;
 
 
-        public AnswerViewHolder(final View itemView, final AnswerClickListener clickListener) {
+        private AnswerViewHolder(final View itemView, final AnswerClickListener clickListener) {
             super(itemView);
             text = (TextView) itemView.findViewById(R.id.text_position);
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -47,6 +46,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Answer
                     if (clickListener != null) {
                         clickListener.onAnswerClick(getAdapterPosition());
                         text.setBackgroundColor(Color.GREEN);
+                        itemView.setClickable(false);
                     }
                 }
             });
@@ -55,16 +55,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Answer
 
     public RecyclerAdapter(AnswerClickListener clickListener) {
         this.clickListener = clickListener;
-        this.dataset = new ArrayList<Answer>();
     }
 
-    public void setNotes(@NonNull List<Answer> notes) {
-        dataset = notes;
+    public void setAnswers(@NonNull List<Answer> notes) {
+        mAnswers = notes;
         notifyDataSetChanged();
-    }
-
-    public Answer getRepository(int position) {
-        return dataset.get(position);
     }
 
     @Override
@@ -76,11 +71,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Answer
 
     @Override
     public void onBindViewHolder(RecyclerAdapter.AnswerViewHolder holder, int position) {
-        Answer answer = dataset.get(position);
+        Answer answer = mAnswers.get(position);
         holder.text.setText(answer.getAnswers());
     }
     @Override
     public int getItemCount () {
-        return dataset.size();
+        return mAnswers.size();
     }
 }

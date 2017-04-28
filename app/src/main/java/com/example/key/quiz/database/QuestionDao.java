@@ -22,11 +22,10 @@ public class QuestionDao extends AbstractDao<Question, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, long.class, "id", true, "_id");
-        public final static Property CommunicationId = new Property(1, long.class, "communicationId", false, "COMMUNICATION_ID");
-        public final static Property Type = new Property(2, long.class, "type", false, "TYPE");
-        public final static Property Questions = new Property(3, String.class, "questions", false, "QUESTIONS");
-        public final static Property RightAnswerId = new Property(4, long.class, "rightAnswerId", false, "RIGHT_ANSWER_ID");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property Type = new Property(1, Long.class, "type", false, "TYPE");
+        public final static Property Questions = new Property(2, String.class, "questions", false, "QUESTIONS");
+        public final static Property RightAnswerId = new Property(3, Long.class, "rightAnswerId", false, "RIGHT_ANSWER_ID");
     }
 
     private DaoSession daoSession;
@@ -45,11 +44,10 @@ public class QuestionDao extends AbstractDao<Question, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"QUESTION\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY NOT NULL ," + // 0: id
-                "\"COMMUNICATION_ID\" INTEGER NOT NULL UNIQUE ," + // 1: communicationId
-                "\"TYPE\" INTEGER NOT NULL ," + // 2: type
-                "\"QUESTIONS\" TEXT NOT NULL ," + // 3: questions
-                "\"RIGHT_ANSWER_ID\" INTEGER NOT NULL );"); // 4: rightAnswerId
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "\"TYPE\" INTEGER NOT NULL ," + // 1: type
+                "\"QUESTIONS\" TEXT NOT NULL ," + // 2: questions
+                "\"RIGHT_ANSWER_ID\" INTEGER NOT NULL );"); // 3: rightAnswerId
     }
 
     /** Drops the underlying database table. */
@@ -61,21 +59,27 @@ public class QuestionDao extends AbstractDao<Question, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, Question entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
-        stmt.bindLong(2, entity.getCommunicationId());
-        stmt.bindLong(3, entity.getType());
-        stmt.bindString(4, entity.getQuestions());
-        stmt.bindLong(5, entity.getRightAnswerId());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
+        stmt.bindLong(2, entity.getType());
+        stmt.bindString(3, entity.getQuestions());
+        stmt.bindLong(4, entity.getRightAnswerId());
     }
 
     @Override
     protected final void bindValues(SQLiteStatement stmt, Question entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
-        stmt.bindLong(2, entity.getCommunicationId());
-        stmt.bindLong(3, entity.getType());
-        stmt.bindString(4, entity.getQuestions());
-        stmt.bindLong(5, entity.getRightAnswerId());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
+        stmt.bindLong(2, entity.getType());
+        stmt.bindString(3, entity.getQuestions());
+        stmt.bindLong(4, entity.getRightAnswerId());
     }
 
     @Override
@@ -86,28 +90,26 @@ public class QuestionDao extends AbstractDao<Question, Long> {
 
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     @Override
     public Question readEntity(Cursor cursor, int offset) {
         Question entity = new Question( //
-            cursor.getLong(offset + 0), // id
-            cursor.getLong(offset + 1), // communicationId
-            cursor.getLong(offset + 2), // type
-            cursor.getString(offset + 3), // questions
-            cursor.getLong(offset + 4) // rightAnswerId
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.getLong(offset + 1), // type
+            cursor.getString(offset + 2), // questions
+            cursor.getLong(offset + 3) // rightAnswerId
         );
         return entity;
     }
      
     @Override
     public void readEntity(Cursor cursor, Question entity, int offset) {
-        entity.setId(cursor.getLong(offset + 0));
-        entity.setCommunicationId(cursor.getLong(offset + 1));
-        entity.setType(cursor.getLong(offset + 2));
-        entity.setQuestions(cursor.getString(offset + 3));
-        entity.setRightAnswerId(cursor.getLong(offset + 4));
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setType(cursor.getLong(offset + 1));
+        entity.setQuestions(cursor.getString(offset + 2));
+        entity.setRightAnswerId(cursor.getLong(offset + 3));
      }
     
     @Override
@@ -127,7 +129,7 @@ public class QuestionDao extends AbstractDao<Question, Long> {
 
     @Override
     public boolean hasKey(Question entity) {
-        throw new UnsupportedOperationException("Unsupported for entities with a non-null key");
+        return entity.getId() != null;
     }
 
     @Override

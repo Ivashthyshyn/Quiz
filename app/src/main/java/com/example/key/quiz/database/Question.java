@@ -7,46 +7,42 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToMany;
-import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.List;
 
 @Entity(active = true, nameInDb = "QUESTION")
 public class Question {
-    @Id
-    private long id;
-    @NotNull
-    @Unique
-    private long communicationId;
+    @Id(autoincrement = true)
+    private Long id;
 
     @NotNull
-    private long type;
+    private Long type;
 
     @NotNull
     private String questions;
 
     @NotNull
-    private long rightAnswerId;
+    private Long rightAnswerId;
 
     @ToMany(joinProperties = {
-            @JoinProperty(name = "communicationId",referencedName = "remoutCommunicationId")
+            @JoinProperty(name = "id",referencedName = "questionId")
     })
     private List<Answer> answers;
+
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
+
     /** Used for active entity operations. */
     @Generated(hash = 891254763)
     private transient QuestionDao myDao;
 
 
 
-
-    @Generated(hash = 1185162632)
-    public Question(long id, long communicationId, long type, @NotNull String questions,
-            long rightAnswerId) {
+    @Generated(hash = 88177001)
+    public Question(Long id, @NotNull Long type, @NotNull String questions,
+            @NotNull Long rightAnswerId) {
         this.id = id;
-        this.communicationId = communicationId;
         this.type = type;
         this.questions = questions;
         this.rightAnswerId = rightAnswerId;
@@ -57,19 +53,18 @@ public class Question {
 
 
 
-
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getType() {
+    public Long getType() {
         return this.type;
     }
 
-    public void setType(long type) {
+    public void setType(Long type) {
         this.type = type;
     }
     public String getQuestions() {
@@ -79,23 +74,23 @@ public class Question {
     public void setQuestions(String questions) {
         this.questions = questions;
     }
-    public void setRightAnswer(long rightAnswerId) {
+    public void setRightAnswer(Long rightAnswerId) {
         this.rightAnswerId = rightAnswerId;
     }
-    public long getRightAnswer() {
+    public Long getRightAnswer() {
         return this.rightAnswerId;
     }
-    public long getCommunicationId() {
-        return this.communicationId;
+    public Long getRightAnswerId() {
+        return this.rightAnswerId;
     }
-    public void setCommunicationId(long communicationId) {
-        this.communicationId = communicationId;
+    public void setRightAnswerId(Long rightAnswerId) {
+        this.rightAnswerId = rightAnswerId;
     }
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 1142007765)
+    @Generated(hash = 1548987448)
     public List<Answer> getAnswers() {
         if (answers == null) {
             final DaoSession daoSession = this.daoSession;
@@ -103,7 +98,7 @@ public class Question {
                 throw new DaoException("Entity is detached from DAO context");
             }
             AnswerDao targetDao = daoSession.getAnswerDao();
-            List<Answer> answersNew = targetDao._queryQuestion_Answers(communicationId);
+            List<Answer> answersNew = targetDao._queryQuestion_Answers(id);
             synchronized (this) {
                 if (answers == null) {
                     answers = answersNew;
@@ -156,15 +151,5 @@ public class Question {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getQuestionDao() : null;
     }
-    public long getRightAnswerId() {
-        return this.rightAnswerId;
-    }
-    public void setRightAnswerId(int rightAnswerId) {
-        this.rightAnswerId = rightAnswerId;
-    }
-    public void setRightAnswerId(long rightAnswerId) {
-        this.rightAnswerId = rightAnswerId;
-    }
 
-    
 }

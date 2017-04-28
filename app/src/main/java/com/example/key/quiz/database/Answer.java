@@ -8,14 +8,14 @@ import org.greenrobot.greendao.DaoException;
 
 @Entity(active = true, nameInDb = "ANSWER")
 public class Answer {
-    @Id
-    private long id;
+    @Id(autoincrement = true)
+    private Long id;
 
     @NotNull
     private String answers;
 
-    @NotNull
-    private long remoutCommunicationId;
+    
+    private Long questionId;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -27,18 +27,16 @@ public class Answer {
 
 
 
-
-    @Generated(hash = 1027196540)
-    public Answer(long id, @NotNull String answers, long remoutCommunicationId) {
+    @Generated(hash = 1786431728)
+    public Answer(Long id, @NotNull String answers, Long questionId) {
         this.id = id;
         this.answers = answers;
-        this.remoutCommunicationId = remoutCommunicationId;
+        this.questionId = questionId;
     }
 
     @Generated(hash = 53889439)
     public Answer() {
     }
-
 
 
 
@@ -50,20 +48,28 @@ public class Answer {
         this.answers = answers;
     }
 
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getRemoutCommunicationId() {
-        return this.remoutCommunicationId;
+    public Long questionId() {
+        return this.questionId;
     }
 
-    public void setRemoutCommunicationId(long remoutCommunicationId) {
-        this.remoutCommunicationId = remoutCommunicationId;
+    public void questionId(Long questionId) {
+        this.questionId = questionId;
+    }
+
+    public Long getQuestionId() {
+        return this.questionId;
+    }
+
+    public void setQuestionId(Long questionId) {
+        this.questionId = questionId;
     }
 
     /**
@@ -109,5 +115,6 @@ public class Answer {
         myDao = daoSession != null ? daoSession.getAnswerDao() : null;
     }
 
+   
 
 }

@@ -9,83 +9,73 @@ import android.widget.Button;
 import com.example.key.quiz.database.AnswerDao;
 import com.example.key.quiz.database.DaoSession;
 import com.example.key.quiz.database.QuestionDao;
+import com.example.key.quiz.database.QuizApplication;
+
 
 public class InitialActivity extends AppCompatActivity {
+    public static final long TYPE_QUESTION_1 = 1;
+    public static final long TYPE_QUESTION_2 = 2;
+    public static final long TYPE_QUESTION_3 = 3;
 
-    private QuestionDao mQuestionDao;
-    private AnswerDao mAnswerDao;
+    public QuestionDao questionDao;
+    public AnswerDao answerDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial);
-
+        // created daoSession  to access a database of questions and answers
         DaoSession daoSession = ((QuizApplication)getApplication()).getDaoSession();
-        mQuestionDao = daoSession.getQuestionDao();
-        mAnswerDao = daoSession.getAnswerDao();
+        questionDao = daoSession.getQuestionDao();
+        answerDao = daoSession.getAnswerDao();
 
-        //fill database Question
+        // ToDo replace downloading resource base method from a text field
+        // add question ant answers to database
 /**
-        Question question1 = new Question();
-        question1.setId(1L);
-        question1.setType(1L);
-        question1.setQuestions("Як слід писати слово стоп(кран)?");
-        question1.setRightAnswer(3L);
-        question1.setCommunicationId(1L);
-        mQuestionDao.insert(question1);
-        Answer mAnsver1 = new Answer();
-        mAnsver1.setId(1L);
-        mAnsver1.setAnswers("Разом.");
-        mAnsver1.setRemoutCommunicationId(question1.getCommunicationId());
-        mAnswerDao.insert(mAnsver1);
-        Answer mAnsver2 = new Answer();
-        mAnsver2.setId(2L);
-        mAnsver2.setAnswers("Окркмо.");
-        mAnsver2.setRemoutCommunicationId(question1.getCommunicationId());
-        mAnswerDao.insert(mAnsver2);
-        Answer mAnsver3 = new Answer();
-        mAnsver3.setId(3L);
-        mAnsver3.setAnswers("Через дефіс.");
-        mAnsver3.setRemoutCommunicationId(question1.getCommunicationId());
-        mAnswerDao.insert(mAnsver3);
+            Question question1 = new Question();
+            question1.setType(TYPE_QUESTION_1);
+            question1.setQuestions("Як слід писати слово стоп(кран)?");
+            question1.setRightAnswer(3L);
+            questionDao.insert(question1);
+            Answer answer1 = new Answer();
+            answer1.setAnswers("Разом.");
+            answer1.setQuestionId(question1.getId());
+            answerDao.insert(answer1);
+            Answer answer2 = new Answer();
+            answer2.setAnswers("Окремо.");
+            answer2.setQuestionId(question1.getId());
+            answerDao.insert(answer2);
+            Answer answer3 = new Answer();
+            answer3.setAnswers("Через дефіс.");
+            answer3.setQuestionId(question1.getId());
+            answerDao.insert(answer3);
 
-        Question question2 = new Question();
-        question2.setId(2L);
-        question2.setType(2L);
-        question2.setQuestions("Як створити найкращий додаток у цілому світі");
-        question2.setRightAnswer(4L);
-        question2.setCommunicationId(2L);
-        mQuestionDao.insert(question2);
-        Answer mAnsver4 = new Answer();
-        mAnsver4.setId(4L);
-        mAnsver4.setAnswers("Написати");
-        mAnsver4.setRemoutCommunicationId(question2.getCommunicationId());
-        mAnswerDao.insert(mAnsver4);
+            Question question2 = new Question();
+            question2.setType(TYPE_QUESTION_2);
+            question2.setQuestions("Як створити найкращий додаток у цілому світі");
+            question2.setRightAnswer(4L);
+            questionDao.insert(question2);
+            Answer answer4 = new Answer();
+            answer4.setAnswers("Написати");
+            answer4.setQuestionId(question2.getId());
+            answerDao.insert(answer4);
 
-        Question question3 = new Question();
-        question3.setId(3L);
-        question3.setType(3L);
-        question3.setQuestions("Вкажіть неправильно вжите слово");
-        question3.setRightAnswer(1L);
-        question3.setCommunicationId(3L);
-        mQuestionDao.insert(question3);
-        Answer mAnsver5 = new Answer();
-        mAnsver5.setId(5L);
-        mAnsver5.setAnswers("Я незнаю як правильно писати");
-        mAnsver5.setRemoutCommunicationId(question3.getCommunicationId());
-        mAnswerDao.insert(mAnsver5);
+            Question question3 = new Question();
+            question3.setType(TYPE_QUESTION_3);
+            question3.setQuestions("Вкажіть неправильно вжите слово");
+            question3.setRightAnswer(1L);
+            questionDao.insert(question3);
+            Answer answer5 = new Answer();
+            answer5.setAnswers("Я незнаю як правильно писати");
+            answer5.setQuestionId(question3.getId());
+            answerDao.insert(answer5);
 */
-
-
-
-
-
-        Button startButton = (Button)findViewById(R.id.startButton);
+        Button startButton = (Button)findViewById(R.id.startQuizButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(InitialActivity.this, TrialActivity.class);
-                startActivity(intent);
+                Intent intentTrialActivity = new Intent(InitialActivity.this, TrialActivity.class);
+                startActivity(intentTrialActivity);
             }
         });
     }
