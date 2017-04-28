@@ -8,8 +8,17 @@
     android:orientation="vertical"
     tools:context="com.example.key.quiz.TrialActivity">
 
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="138dp">
+
+    </FrameLayout>
+
     <TextView
-        android:id="@+id/question"
+        android:id="@+id/textQuestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -35,17 +44,17 @@
         android:textColor="@android:color/background_light" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_button"
-        android:text="@string/back"
-        android:textColor="@android:color/background_light"
         android:layout_alignBaseline="@+id/next_button"
         android:layout_alignBottom="@+id/next_button"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginLeft="34dp"
-        android:layout_marginStart="34dp" />
+        android:layout_marginStart="34dp"
+        android:background="@drawable/rounded_button"
+        android:text="@string/back"
+        android:textColor="@android:color/background_light" />
 
 </RelativeLayout>

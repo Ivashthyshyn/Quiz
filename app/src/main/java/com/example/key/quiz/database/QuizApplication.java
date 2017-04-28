@@ -1,9 +1,6 @@
-package com.example.key.quiz;
+package com.example.key.quiz.database;
 
 import android.app.Application;
-
-import com.example.key.quiz.database.DaoMaster;
-import com.example.key.quiz.database.DaoSession;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -23,7 +20,7 @@ public class QuizApplication extends Application {
         daoSession = new DaoMaster(db).newSession();
     }
 
-    public DaoSession getDaoSession() {
+    public  DaoSession getDaoSession() {
         return daoSession;
     }
 }

@@ -23,8 +23,9 @@ public class QuestionDao extends AbstractDao<Question, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property RemoteId = new Property(1, Long.class, "remoteId", false, "REMOTE_ID");
-        public final static Property Content = new Property(2, String.class, "content", false, "CONTENT");
+        public final static Property Type = new Property(1, Long.class, "type", false, "TYPE");
+        public final static Property Questions = new Property(2, String.class, "questions", false, "QUESTIONS");
+        public final static Property RightAnswerId = new Property(3, Long.class, "rightAnswerId", false, "RIGHT_ANSWER_ID");
     }
 
     private DaoSession daoSession;
@@ -43,9 +44,10 @@ public class QuestionDao extends AbstractDao<Question, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"QUESTION\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"REMOTE_ID\" INTEGER NOT NULL UNIQUE ," + // 1: remoteId
-                "\"CONTENT\" TEXT NOT NULL );"); // 2: content
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "\"TYPE\" INTEGER NOT NULL ," + // 1: type
+                "\"QUESTIONS\" TEXT NOT NULL ," + // 2: questions
+                "\"RIGHT_ANSWER_ID\" INTEGER NOT NULL );"); // 3: rightAnswerId
     }
 
     /** Drops the underlying database table. */
@@ -62,8 +64,9 @@ public class QuestionDao extends AbstractDao<Question, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getRemoteId());
-        stmt.bindString(3, entity.getContent());
+        stmt.bindLong(2, entity.getType());
+        stmt.bindString(3, entity.getQuestions());
+        stmt.bindLong(4, entity.getRightAnswerId());
     }
 
     @Override
@@ -74,8 +77,9 @@ public class QuestionDao extends AbstractDao<Question, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getRemoteId());
-        stmt.bindString(3, entity.getContent());
+        stmt.bindLong(2, entity.getType());
+        stmt.bindString(3, entity.getQuestions());
+        stmt.bindLong(4, entity.getRightAnswerId());
     }
 
     @Override
@@ -93,8 +97,9 @@ public class QuestionDao extends AbstractDao<Question, Long> {
     public Question readEntity(Cursor cursor, int offset) {
         Question entity = new Question( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getLong(offset + 1), // remoteId
-            cursor.getString(offset + 2) // content
+            cursor.getLong(offset + 1), // type
+            cursor.getString(offset + 2), // questions
+            cursor.getLong(offset + 3) // rightAnswerId
         );
         return entity;
     }
@@ -102,8 +107,9 @@ public class QuestionDao extends AbstractDao<Question, Long> {
     @Override
     public void readEntity(Cursor cursor, Question entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setRemoteId(cursor.getLong(offset + 1));
-        entity.setContent(cursor.getString(offset + 2));
+        entity.setType(cursor.getLong(offset + 1));
+        entity.setQuestions(cursor.getString(offset + 2));
+        entity.setRightAnswerId(cursor.getLong(offset + 3));
      }
     
     @Override

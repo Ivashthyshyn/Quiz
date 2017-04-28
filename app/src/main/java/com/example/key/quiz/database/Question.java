@@ -7,25 +7,27 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToMany;
-import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.List;
 
 @Entity(active = true, nameInDb = "QUESTION")
 public class Question {
-    @Id
+    @Id(autoincrement = true)
     private Long id;
-    @NotNull
-    @Unique
-    private Long remoteId;
 
     @NotNull
-    private String content;
+    private Long type;
+
+    @NotNull
+    private String questions;
+
+    @NotNull
+    private Long rightAnswerId;
 
     @ToMany(joinProperties = {
-            @JoinProperty(name = "remoteId",referencedName = "userRemoteId")
+            @JoinProperty(name = "id",referencedName = "questionId")
     })
-    private List<Repository> repositories;
+    private List<Answer> answers;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -35,15 +37,21 @@ public class Question {
     @Generated(hash = 891254763)
     private transient QuestionDao myDao;
 
-    @Generated(hash = 1369767592)
-    public Question(Long id, @NotNull Long remoteId, @NotNull String content) {
+
+
+    @Generated(hash = 88177001)
+    public Question(Long id, @NotNull Long type, @NotNull String questions,
+            @NotNull Long rightAnswerId) {
         this.id = id;
-        this.remoteId = remoteId;
-        this.content = content;
+        this.type = type;
+        this.questions = questions;
+        this.rightAnswerId = rightAnswerId;
     }
     @Generated(hash = 1868476517)
     public Question() {
     }
+
+
 
     public Long getId() {
         return this.id;
@@ -52,12 +60,57 @@ public class Question {
         this.id = id;
     }
 
-    public String getContent() {
-        return this.content;
+    public Long getType() {
+        return this.type;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setType(Long type) {
+        this.type = type;
+    }
+    public String getQuestions() {
+        return this.questions;
+    }
+
+    public void setQuestions(String questions) {
+        this.questions = questions;
+    }
+    public void setRightAnswer(Long rightAnswerId) {
+        this.rightAnswerId = rightAnswerId;
+    }
+    public Long getRightAnswer() {
+        return this.rightAnswerId;
+    }
+    public Long getRightAnswerId() {
+        return this.rightAnswerId;
+    }
+    public void setRightAnswerId(Long rightAnswerId) {
+        this.rightAnswerId = rightAnswerId;
+    }
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1548987448)
+    public List<Answer> getAnswers() {
+        if (answers == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            AnswerDao targetDao = daoSession.getAnswerDao();
+            List<Answer> answersNew = targetDao._queryQuestion_Answers(id);
+            synchronized (this) {
+                if (answers == null) {
+                    answers = answersNew;
+                }
+            }
+        }
+        return answers;
+    }
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 663994474)
+    public synchronized void resetAnswers() {
+        answers = null;
     }
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
@@ -92,43 +145,11 @@ public class Question {
         }
         myDao.update(this);
     }
-    public Long getRemoteId() {
-        return this.remoteId;
-    }
-    public void setRemoteId(Long remoteId) {
-        this.remoteId = remoteId;
-    }
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 754833738)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getQuestionDao() : null;
     }
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 64504010)
-    public List<Repository> getRepositories() {
-        if (repositories == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            RepositoryDao targetDao = daoSession.getRepositoryDao();
-            List<Repository> repositoriesNew = targetDao
-                    ._queryQuestion_Repositories(remoteId);
-            synchronized (this) {
-                if (repositories == null) {
-                    repositories = repositoriesNew;
-                }
-            }
-        }
-        return repositories;
-    }
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 438307964)
-    public synchronized void resetRepositories() {
-        repositories = null;
-    }
+
 }

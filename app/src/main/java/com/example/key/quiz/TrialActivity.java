@@ -1,44 +1,80 @@
 package com.example.key.quiz;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.key.quiz.Fragments.ButtonFragment;
+import com.example.key.quiz.Fragments.EditFragment;
+import com.example.key.quiz.Fragments.RecyclerFragment;
+import com.example.key.quiz.database.Answer;
+import com.example.key.quiz.database.AnswerDao;
 import com.example.key.quiz.database.DaoSession;
+import com.example.key.quiz.database.Question;
 import com.example.key.quiz.database.QuestionDao;
-import com.example.key.quiz.database.Repository;
-import com.example.key.quiz.database.RepositoryDao;
+import com.example.key.quiz.database.QuizApplication;
 
 import org.greenrobot.greendao.query.Query;
 
-import java.util.List;
+import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_1;
+import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_2;
+import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_3;
 
 
 public class TrialActivity extends AppCompatActivity {
-    private QuestionDao questionDao;
-    private RepositoryDao repositoryDao;
-    private Query<Repository> repositoryQuery;
-    private RecyclerAdapter recyclerAdapter;
-    // identifies the key questions and answers to them
-    private long questionKey = 1;
+    public QuestionDao questionDao;
+    public AnswerDao answerDao;
+    public TextView textQuestion;
+    public FragmentManager fragmentManager;
+    public RecyclerFragment fragmentRecycler;
+    public ButtonFragment buttonFragment;
+    public EditFragment fragmentEdit;
+    public Query<Answer> answerQuery;
+    private long mQuestionId = 1;
+    private long mQuestionType;
+    private FragmentTransaction mFragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trial);
+        // create daoSession to access the database
+        DaoSession daoSession = ((QuizApplication) getApplication()).getDaoSession();
+        questionDao = daoSession.getQuestionDao();
+        answerDao = daoSession.getAnswerDao();
+        textQuestion = (TextView)findViewById(R.id.textQuestion);
+        fragmentRecycler = new RecyclerFragment();
+        fragmentEdit = new EditFragment();
+        buttonFragment = new ButtonFragment();
+        fragmentManager = getSupportFragmentManager();
+
+        if (savedInstanceState == null) {
+            Question question = questionDao.load(mQuestionId);
+            mQuestionType = question.getType();
+            textQuestion.setText(question.getQuestions());
+            answerQuery = answerDao.queryBuilder().where(AnswerDao.Properties.QuestionId.eq(question.getId())).build();
+            mFragmentTransaction = fragmentManager.beginTransaction();
+            mFragmentTransaction.add(R.id.container, fragmentRecycler);
+            mFragmentTransaction.commit();
+            fragmentRecycler.loadAnswer(answerQuery);
+        }
+
+        Question question = questionDao.load(mQuestionId);
+        mQuestionType = question.getType();
+        textQuestion.setText(question.getQuestions());
+
 
         Button nextButton = (Button)findViewById(R.id.next_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (questionKey < 5) {
-                    questionKey = questionKey + 1;
-                    setUpViews();
+                if (mQuestionId < 3) {
+                    mQuestionId = mQuestionId + 1;
+                    updateFragment();
                 }
             }
         });
@@ -47,51 +83,40 @@ public class TrialActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (questionKey > 1) {
-                    questionKey = questionKey - 1;
-                    setUpViews();
+                if (mQuestionId > 1) {
+                    mQuestionId = mQuestionId - 1;
+                    updateFragment();
                 }
             }
         });
 
-        DaoSession daoSession = ((QuizApplication) getApplication()).getDaoSession();
-        questionDao = daoSession.getQuestionDao();
-        repositoryDao = daoSession.getRepositoryDao();
-
-        setUpViews();
-
     }
 
-    private void setUpViews() {
-        TextView textQuestion = (TextView)findViewById(R.id.question);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        //noinspection ConstantConditions
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerAdapter = new RecyclerAdapter(answerClickListener);
-        recyclerView.setAdapter(recyclerAdapter);
-        textQuestion.setText(questionDao.load(questionKey).getContent());
-        // select answers with database
-        repositoryQuery = repositoryDao.queryBuilder().where(RepositoryDao.Properties.UserRemoteId.eq(questionKey)).build();
-        updateNotes();
-    }
-
-    private void updateNotes() {
-        List<Repository> answer = repositoryQuery.list();
-        recyclerAdapter.setNotes(answer);
-    }
+    private void updateFragment() {
+        Question question = questionDao.load(mQuestionId);
+        mQuestionType = question.getType();
+        textQuestion.setText(question.getQuestions());
+        answerQuery = answerDao.queryBuilder().where(AnswerDao.Properties.QuestionId
+                .eq(question.getId())).build();
 
 
-
-    RecyclerAdapter.AnswerClickListener answerClickListener = new  RecyclerAdapter.AnswerClickListener() {
-        @Override
-        public void onAnswerClick(int position) {
-            Repository note = recyclerAdapter.getRepository(position);
-            Long noteId = note.getId();
-        // action for ButtonClick
-            Toast.makeText(TrialActivity.this, "Ви натиснули кнопку " + position,
-                    Toast.LENGTH_LONG).show();
+        if(mQuestionType == TYPE_QUESTION_1 ){
+            mFragmentTransaction = fragmentManager.beginTransaction();
+            mFragmentTransaction.replace(R.id.container, fragmentRecycler);
+            mFragmentTransaction.commit();
+            fragmentRecycler.loadAnswer(answerQuery);
+        }else if (mQuestionType == TYPE_QUESTION_2){
+            mFragmentTransaction = fragmentManager.beginTransaction();
+            mFragmentTransaction.replace(R.id.container, fragmentEdit);
+            mFragmentTransaction.commit();
+            fragmentEdit.loadAnswer(answerQuery);
+        }else if (mQuestionType == TYPE_QUESTION_3){
+            mFragmentTransaction = fragmentManager.beginTransaction();
+            mFragmentTransaction.replace(R.id.container, buttonFragment);
+            mFragmentTransaction.commit();
+            buttonFragment.loadAnswer(answerQuery);
         }
+    }
 
-    };
+
 }

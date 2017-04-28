@@ -4,4 +4,8 @@
     <string name="introduction">Ukrainian is among the three most beautiful languages ​​in the world. In the speech contest in Italy it recognized the melody the second language in the world (after the Italian). In the speech contest, held in Paris in 1934, the Ukrainian language considered the third most beautiful language in the world (after French and Persian) on criteria such as phonetics, vocabulary, phraseology and sentence structure.</string>
     <string name="next">NEXT</string>
     <string name="back">BACK</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Enter_your_version">ENTER YOUR VERSION</string>
 </resources>
