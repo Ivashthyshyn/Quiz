@@ -22,10 +22,10 @@ public class Question {
     private String questions;
 
     @NotNull
-    private Long rightAnswerId;
+    private String rightAnswer;
 
     @ToMany(joinProperties = {
-            @JoinProperty(name = "id",referencedName = "questionId")
+            @JoinProperty(name = "id", referencedName = "questionId")
     })
     private List<Answer> answers;
 
@@ -38,24 +38,24 @@ public class Question {
     private transient QuestionDao myDao;
 
 
-
-    @Generated(hash = 88177001)
+    @Generated(hash = 2102321837)
     public Question(Long id, @NotNull Long type, @NotNull String questions,
-            @NotNull Long rightAnswerId) {
+            @NotNull String rightAnswer) {
         this.id = id;
         this.type = type;
         this.questions = questions;
-        this.rightAnswerId = rightAnswerId;
+        this.rightAnswer = rightAnswer;
     }
+
     @Generated(hash = 1868476517)
     public Question() {
     }
 
 
-
     public Long getId() {
         return this.id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -67,6 +67,7 @@ public class Question {
     public void setType(Long type) {
         this.type = type;
     }
+
     public String getQuestions() {
         return this.questions;
     }
@@ -74,18 +75,15 @@ public class Question {
     public void setQuestions(String questions) {
         this.questions = questions;
     }
-    public void setRightAnswer(Long rightAnswerId) {
-        this.rightAnswerId = rightAnswerId;
+
+    public String getRightAnswer() {
+        return this.rightAnswer;
     }
-    public Long getRightAnswer() {
-        return this.rightAnswerId;
+
+    public void setRightAnswer(String rightAnswer) {
+        this.rightAnswer = rightAnswer;
     }
-    public Long getRightAnswerId() {
-        return this.rightAnswerId;
-    }
-    public void setRightAnswerId(Long rightAnswerId) {
-        this.rightAnswerId = rightAnswerId;
-    }
+
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
@@ -107,11 +105,13 @@ public class Question {
         }
         return answers;
     }
+
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 663994474)
     public synchronized void resetAnswers() {
         answers = null;
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
      * Entity must attached to an entity context.
@@ -123,6 +123,7 @@ public class Question {
         }
         myDao.delete(this);
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -134,6 +135,7 @@ public class Question {
         }
         myDao.refresh(this);
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
      * Entity must attached to an entity context.
@@ -145,6 +147,7 @@ public class Question {
         }
         myDao.update(this);
     }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 754833738)
     public void __setDaoSession(DaoSession daoSession) {
