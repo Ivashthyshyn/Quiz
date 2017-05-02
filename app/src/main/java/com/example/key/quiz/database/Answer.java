@@ -1,17 +1,16 @@
 package com.example.key.quiz.database;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.NotNull;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 @Entity(active = true, nameInDb = "ANSWER")
 public class Answer {
     @Id(autoincrement = true)
     private Long id;
 
-    @NotNull
+    
     private String answers;
 
     
@@ -27,8 +26,8 @@ public class Answer {
 
 
 
-    @Generated(hash = 1786431728)
-    public Answer(Long id, @NotNull String answers, Long questionId) {
+    @Generated(hash = 1417333930)
+    public Answer(Long id, String answers, Long questionId) {
         this.id = id;
         this.answers = answers;
         this.questionId = questionId;
