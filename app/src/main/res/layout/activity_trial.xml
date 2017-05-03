@@ -51,13 +51,13 @@
         android:textColor="@android:color/background_light"
         android:textSize="24sp" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
+    <fragment
+        android:id="@+id/fragment_button"
+        android:name="com.example.key.quiz.SelectorFragment"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/container"
+        android:layout_below="@+id/textQuestion"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="138dp">
-
-    </FrameLayout>
+        android:layout_marginTop="90dp" />
 
 </RelativeLayout>

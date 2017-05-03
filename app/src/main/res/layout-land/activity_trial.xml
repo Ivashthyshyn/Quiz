@@ -8,14 +8,14 @@
     android:orientation="vertical"
     tools:context="com.example.key.quiz.TrialActivity">
 
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
+    <fragment
+        android:id="@+id/fragment_button"
+        android:name="com.example.key.quiz.SelectorFragment"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/textQuestion"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="138dp">
-
-    </FrameLayout>
+        android:layout_marginTop="90dp" />
 
     <TextView
         android:id="@+id/textQuestion"

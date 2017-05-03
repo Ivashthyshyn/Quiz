@@ -25,7 +25,7 @@ public class QuestionDao extends AbstractDao<Question, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Type = new Property(1, Long.class, "type", false, "TYPE");
         public final static Property Questions = new Property(2, String.class, "questions", false, "QUESTIONS");
-        public final static Property RightAnswerId = new Property(3, Long.class, "rightAnswerId", false, "RIGHT_ANSWER_ID");
+        public final static Property RightAnswer = new Property(3, String.class, "rightAnswer", false, "RIGHT_ANSWER");
     }
 
     private DaoSession daoSession;
@@ -47,7 +47,7 @@ public class QuestionDao extends AbstractDao<Question, Long> {
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"TYPE\" INTEGER NOT NULL ," + // 1: type
                 "\"QUESTIONS\" TEXT NOT NULL ," + // 2: questions
-                "\"RIGHT_ANSWER_ID\" INTEGER NOT NULL );"); // 3: rightAnswerId
+                "\"RIGHT_ANSWER\" TEXT NOT NULL );"); // 3: rightAnswer
     }
 
     /** Drops the underlying database table. */
@@ -66,7 +66,7 @@ public class QuestionDao extends AbstractDao<Question, Long> {
         }
         stmt.bindLong(2, entity.getType());
         stmt.bindString(3, entity.getQuestions());
-        stmt.bindLong(4, entity.getRightAnswerId());
+        stmt.bindString(4, entity.getRightAnswer());
     }
 
     @Override
@@ -79,7 +79,7 @@ public class QuestionDao extends AbstractDao<Question, Long> {
         }
         stmt.bindLong(2, entity.getType());
         stmt.bindString(3, entity.getQuestions());
-        stmt.bindLong(4, entity.getRightAnswerId());
+        stmt.bindString(4, entity.getRightAnswer());
     }
 
     @Override
@@ -99,7 +99,7 @@ public class QuestionDao extends AbstractDao<Question, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getLong(offset + 1), // type
             cursor.getString(offset + 2), // questions
-            cursor.getLong(offset + 3) // rightAnswerId
+            cursor.getString(offset + 3) // rightAnswer
         );
         return entity;
     }
@@ -109,7 +109,7 @@ public class QuestionDao extends AbstractDao<Question, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setType(cursor.getLong(offset + 1));
         entity.setQuestions(cursor.getString(offset + 2));
-        entity.setRightAnswerId(cursor.getLong(offset + 3));
+        entity.setRightAnswer(cursor.getString(offset + 3));
      }
     
     @Override
