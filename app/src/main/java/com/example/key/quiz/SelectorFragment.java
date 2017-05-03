@@ -49,8 +49,13 @@ public class SelectorFragment extends Fragment implements View.OnClickListener {
         mCommunicator = (Communicator)getActivity();
     }
 
+    /**
+     * This field displays the user's choice, depending on the type of questions
+     * @param answer is a list of answers from database
+     */
     public void loadAnswer(Query<Answer> answer) {
         List<Answer> mAnswerList = answer.list();
+        // type of questions unanswered
         if (mAnswerList.size() == 0) {
             radioGroup.removeAllViews();
             userAnswer = new EditText(getContext());
@@ -65,7 +70,6 @@ public class SelectorFragment extends Fragment implements View.OnClickListener {
                             Toast.makeText(getActivity(), "Введений варіант "+ (userAnswer.getText().toString()),
                                     Toast.LENGTH_SHORT).show();
                             mCommunicator.processingUserAnswer(userAnswer.getText().toString());
-
                         return true;
                     }
                     return false;
@@ -76,7 +80,7 @@ public class SelectorFragment extends Fragment implements View.OnClickListener {
             radioGroup.setOrientation(LinearLayout.HORIZONTAL);
             String mAnswer = mAnswerList.get(0).getAnswers();
             List<String> words = Arrays.asList(mAnswer.split(" "));
-
+            //type with one answer
             for (int i = 0; i < words.size(); i++) {
                 RadioButton button = new RadioButton(getActivity());
                 button.setId(i);
@@ -89,6 +93,7 @@ public class SelectorFragment extends Fragment implements View.OnClickListener {
                 button.setOnClickListener(this);
                 radioGroup.addView(button);
             }
+            //type with many answers
         } else if (mAnswerList.size() > 1) {
             radioGroup.removeAllViews();
                 radioGroup.setOrientation(LinearLayout.VERTICAL);
@@ -113,6 +118,10 @@ public class SelectorFragment extends Fragment implements View.OnClickListener {
         setRetainInstance(true);
     }
 
+    /**
+     * This handles pressing the radio button
+     * @param radioButton is a pressed view to access user response
+     */
     @Override
     public void onClick(View radioButton) {
         RadioButton pressedButton = (RadioButton)radioButton;
