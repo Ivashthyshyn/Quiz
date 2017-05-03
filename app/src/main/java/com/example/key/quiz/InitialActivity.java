@@ -1,10 +1,13 @@
 package com.example.key.quiz;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.key.quiz.database.Answer;
@@ -27,11 +30,28 @@ public class InitialActivity extends AppCompatActivity {
     private Long mQuestionId;
     public QuestionDao questionDao;
     public AnswerDao answerDao;
+    public String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final EditText userNameInput = new EditText(this);
+
+        builder.setMessage("Вітаємо я ваш персональний провідник." +
+                "Будь-ласка введіть своє імя чи нік для подальшої роботи з вами");
+        builder.setView(userNameInput);
+        builder.setPositiveButton("Готово",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        userName = userNameInput.getText().toString();
+                        dialog.cancel();
+
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
         // created daoSession  to access a database of questions and answers
         DaoSession daoSession = ((QuizApplication)getApplication()).getDaoSession();
         questionDao = daoSession.getQuestionDao();
@@ -87,6 +107,7 @@ public class InitialActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intentTrialActivity = new Intent(InitialActivity.this, TrialActivity.class);
+                intentTrialActivity.putExtra("userName",userName);
                 startActivity(intentTrialActivity);
             }
         });
