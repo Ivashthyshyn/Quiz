@@ -36,6 +36,10 @@ public class InitialActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial);
+        // create Tread
+        LoadingThread loadingThread = new LoadingThread();
+        loadingThread.start();
+        // creating dialogue for user input his name
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final EditText userNameInput = new EditText(this);
 
@@ -47,60 +51,11 @@ public class InitialActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         userName = userNameInput.getText().toString();
                         dialog.cancel();
-
                     }
                 });
         AlertDialog alert = builder.create();
         alert.show();
-        // created daoSession  to access a database of questions and answers
-        DaoSession daoSession = ((QuizApplication)getApplication()).getDaoSession();
-        questionDao = daoSession.getQuestionDao();
-        answerDao = daoSession.getAnswerDao();
 
-        BufferedReader bufferedReader = null;
-        try {
-            bufferedReader = new BufferedReader(new InputStreamReader(getAssets().open("quiz.txt"),"UTF-8"));
-
-            String mLine;
-            while ((mLine = bufferedReader.readLine()) != null){
-                if(mLine.contains("?")){
-                    Question question = new Question();
-                    question.setType(TYPE_QUESTION_1);
-                    question.setRightAnswer("");
-                    question.setQuestions(mLine.substring(2));
-                    questionDao.insert(question);
-                    mQuestionId = question.getId();
-                }else if (mLine.contains("-")){
-                    Answer answer = new Answer();
-                    answer.setAnswers(mLine.substring(2));
-                    answer.setQuestionId(mQuestionId);
-                    answerDao.insert(answer);
-                }else if (mLine.contains("+")){
-                    Answer answer = new Answer();
-                    answer.setAnswers(mLine.substring(2));
-                    answer.setQuestionId(mQuestionId);
-                    answerDao.insert(answer);
-                    Question question = questionDao.load(mQuestionId);
-                    question.setRightAnswer(mLine.substring(2));
-                    questionDao.insertOrReplace(question);
-                }else if(mLine.contains("!")){
-                    Question question = questionDao.load(mQuestionId);
-                    question.setRightAnswer(mLine.substring(2));
-                    questionDao.insertOrReplace(question);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-           if (bufferedReader != null){
-               try {
-                   bufferedReader.close();
-               } catch (IOException e){
-                   Toast.makeText(InitialActivity.this, "Введений варіант ",
-                           Toast.LENGTH_SHORT).show();
-               }
-           }
-        }
 
         Button startButton = (Button)findViewById(R.id.startQuizButton);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -111,5 +66,62 @@ public class InitialActivity extends AppCompatActivity {
                 startActivity(intentTrialActivity);
             }
         });
+    }
+
+    /**
+     * This a thread for load quiz.txt to quiz.db
+     */
+    private class LoadingThread extends Thread {
+        public void run() {
+            // created daoSession  to access a database of questions and answers
+            DaoSession daoSession = ((QuizApplication)getApplication()).getDaoSession();
+            questionDao = daoSession.getQuestionDao();
+            answerDao = daoSession.getAnswerDao();
+
+            BufferedReader bufferedReader = null;
+            try {
+                bufferedReader = new BufferedReader(new InputStreamReader(getAssets().open("quiz.txt"),"UTF-8"));
+
+                String mLine;
+                while ((mLine = bufferedReader.readLine()) != null){
+                    if(mLine.contains("?")){
+                        Question question = new Question();
+                        question.setType(TYPE_QUESTION_1);
+                        question.setRightAnswer("");
+                        question.setQuestions(mLine.substring(2));
+                        questionDao.insert(question);
+                        mQuestionId = question.getId();
+                    }else if (mLine.contains("-")){
+                        Answer answer = new Answer();
+                        answer.setAnswers(mLine.substring(2));
+                        answer.setQuestionId(mQuestionId);
+                        answerDao.insert(answer);
+                    }else if (mLine.contains("+")){
+                        Answer answer = new Answer();
+                        answer.setAnswers(mLine.substring(2));
+                        answer.setQuestionId(mQuestionId);
+                        answerDao.insert(answer);
+                        Question question = questionDao.load(mQuestionId);
+                        question.setRightAnswer(mLine.substring(2));
+                        questionDao.insertOrReplace(question);
+                    }else if(mLine.contains("!")){
+                        Question question = questionDao.load(mQuestionId);
+                        question.setRightAnswer(mLine.substring(2));
+                        questionDao.insertOrReplace(question);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (bufferedReader != null){
+                    try {
+                        bufferedReader.close();
+                    } catch (IOException e){
+                        Toast.makeText(InitialActivity.this, "Виникла помилка при завантаженні бази данх",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }
     }
 }
