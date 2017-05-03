@@ -37,7 +37,7 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trial);
-
+        // intent use for a userName with InitialActivity
         Intent intent = getIntent();
         userName = intent.getStringExtra("userName");
         // create daoSession to access the database
@@ -72,6 +72,10 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
             }
         });
     }
+
+    /**
+     * this updates fragment for each new question and loads the correct answer
+     */
     private void updateFragment() {
         Question question = questionDao.load(mQuestionId);
         mRightAnswer = question.getRightAnswer();
@@ -81,7 +85,10 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
             fragmentButton.loadAnswer(answerQuery);
     }
 
-
+    /**
+     * This handles the user response
+     * @param data is a String user answer
+     */
     @Override
     public void processingUserAnswer(String data) {
         UserSuccess userSuccess = new UserSuccess();
@@ -94,7 +101,7 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
                Toast.makeText(TrialActivity.this,"Це правильна відповідь",Toast.LENGTH_SHORT).show();
            }else {
                Toast.makeText(TrialActivity.this, " Ой це не зовсім правильно",Toast.LENGTH_SHORT).show();
-
+           
         }
     }
 }
