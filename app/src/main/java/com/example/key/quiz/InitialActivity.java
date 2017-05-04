@@ -2,6 +2,7 @@ package com.example.key.quiz;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -37,26 +38,7 @@ public class InitialActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial);
         // create Tread
-        LoadingThread loadingThread = new LoadingThread();
-        loadingThread.start();
-        // creating dialogue for user input his name
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final EditText userNameInput = new EditText(this);
-
-        builder.setMessage("Вітаємо я ваш персональний провідник." +
-                "Будь-ласка введіть своє імя чи нік для подальшої роботи з вами");
-        builder.setView(userNameInput);
-        builder.setPositiveButton("Готово",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        userName = userNameInput.getText().toString();
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-
-
+        checkFirstRun();
         Button startButton = (Button)findViewById(R.id.startQuizButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,5 +105,57 @@ public class InitialActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    /**
+     * This checks the application on first launch and logic to determine various options
+     */
+    private void checkFirstRun() {
+
+        final String PREFS_NAME = "MyPrefsFile";
+        final String PREF_VERSION_CODE_KEY = "version_code";
+        final int DOESNT_EXIST = -1;
+
+        // Get current version code
+        int currentVersionCode = BuildConfig.VERSION_CODE;
+
+        // Get saved version code
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
+
+        // Check for first run or upgrade
+        if (currentVersionCode == savedVersionCode) {
+
+            // This is just a normal run
+            return;
+
+        } else if (savedVersionCode == DOESNT_EXIST) {
+
+            LoadingThread loadingThread = new LoadingThread();
+            loadingThread.start();
+            // creating dialogue for user input his name
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final EditText userNameInput = new EditText(this);
+
+            builder.setMessage("Вітаємо я ваш персональний провідник." +
+                    "Будь-ласка введіть своє імя чи нік для подальшої роботи з вами");
+            builder.setView(userNameInput);
+            builder.setPositiveButton("Готово",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            userName = userNameInput.getText().toString();
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+
+        } else if (currentVersionCode > savedVersionCode) {
+
+            // TODO This is an upgrade
+        }
+
+        // Update the shared preferences with the current version code
+        prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).apply();
     }
 }
