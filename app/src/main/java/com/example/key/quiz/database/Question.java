@@ -16,7 +16,7 @@ public class Question {
     private Long id;
 
     @NotNull
-    private Long type;
+    private int type;
 
     @NotNull
     private String questions;
@@ -37,9 +37,8 @@ public class Question {
     @Generated(hash = 891254763)
     private transient QuestionDao myDao;
 
-
-    @Generated(hash = 2102321837)
-    public Question(Long id, @NotNull Long type, @NotNull String questions,
+    @Generated(hash = 1784150667)
+    public Question(Long id, int type, @NotNull String questions,
             @NotNull String rightAnswer) {
         this.id = id;
         this.type = type;
@@ -51,7 +50,6 @@ public class Question {
     public Question() {
     }
 
-
     public Long getId() {
         return this.id;
     }
@@ -60,11 +58,11 @@ public class Question {
         this.id = id;
     }
 
-    public Long getType() {
+    public int getType() {
         return this.type;
     }
 
-    public void setType(Long type) {
+    public void setType(int type) {
         this.type = type;
     }
 
@@ -155,4 +153,5 @@ public class Question {
         myDao = daoSession != null ? daoSession.getQuestionDao() : null;
     }
 
+  
 }

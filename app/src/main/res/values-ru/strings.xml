@@ -2,4 +2,12 @@
 <resources>
     <string name="app_name">Тест</string>
     <string name="Try">Попробуй</string>
+    <string name="training">ОБУЧЕНИЕ</string>
+    <string name="back">НАЗАД</string>
+    <string name="enter_your_version">ВВЕДИТЕ СВОЙ ОТВЕТ</string>
+    <string name="next">СЛЕДУЮЩИЙ</string>
+    <string name="question_of_section">Пожалуйста выберите раздел для тренировки</string>
+    <string name="orthography">Орфография</string>
+    <string name="loanwords">Слова паразиты</string>
+    <string name="purity_of_language">Чистая речь</string>
 </resources>

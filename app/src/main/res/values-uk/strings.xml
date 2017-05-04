@@ -2,4 +2,12 @@
 <resources>
     <string name="app_name">Вікторина</string>
     <string name="Try">Спробувати</string>
+    <string name="training">НАВЧАННЯ</string>
+    <string name="back">НАЗАД</string>
+    <string name="enter_your_version">ВВЕДІТЬ СВІЙ ВАРІАНТ</string>
+    <string name="next">НАСТУПНИЙ</string>
+    <string name="question_of_section">Будь-ласка виберіть розділ для тренування</string>
+    <string name="orthography">Орфографія</string>
+    <string name="loanwords">Слова паразити</string>
+    <string name="purity_of_language">Чиста мова</string>
 </resources>

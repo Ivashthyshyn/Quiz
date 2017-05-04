@@ -10,6 +10,19 @@
     tools:context="com.example.key.quiz.InitialActivity">
 
     <Button
+        android:id="@+id/button_training"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/startQuizButton"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/startQuizButton"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="26dp"
+        android:background="@drawable/rounded_button"
+        android:text="@string/training" />
+
+    <Button
         android:id="@+id/startQuizButton"
         android:layout_width="match_parent"
         android:layout_height="50dp"

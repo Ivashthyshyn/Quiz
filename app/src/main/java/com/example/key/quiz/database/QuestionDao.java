@@ -23,7 +23,7 @@ public class QuestionDao extends AbstractDao<Question, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Type = new Property(1, Long.class, "type", false, "TYPE");
+        public final static Property Type = new Property(1, int.class, "type", false, "TYPE");
         public final static Property Questions = new Property(2, String.class, "questions", false, "QUESTIONS");
         public final static Property RightAnswer = new Property(3, String.class, "rightAnswer", false, "RIGHT_ANSWER");
     }
@@ -97,7 +97,7 @@ public class QuestionDao extends AbstractDao<Question, Long> {
     public Question readEntity(Cursor cursor, int offset) {
         Question entity = new Question( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getLong(offset + 1), // type
+            cursor.getInt(offset + 1), // type
             cursor.getString(offset + 2), // questions
             cursor.getString(offset + 3) // rightAnswer
         );
@@ -107,7 +107,7 @@ public class QuestionDao extends AbstractDao<Question, Long> {
     @Override
     public void readEntity(Cursor cursor, Question entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setType(cursor.getLong(offset + 1));
+        entity.setType(cursor.getInt(offset + 1));
         entity.setQuestions(cursor.getString(offset + 2));
         entity.setRightAnswer(cursor.getString(offset + 3));
      }

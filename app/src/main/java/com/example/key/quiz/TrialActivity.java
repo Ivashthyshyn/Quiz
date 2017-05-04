@@ -24,6 +24,11 @@ import org.greenrobot.greendao.query.Query;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_0;
+import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_1;
+import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_2;
+import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_3;
+
 
 public class TrialActivity extends AppCompatActivity implements Communicator{
     public QuestionDao questionDao;
@@ -33,9 +38,12 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
     public SelectorFragment fragmentButton;
     public Query<Answer> answerQuery;
     private long mQuestionId = 1;
+    private int mCVTType = 1;
     private String mRightAnswer;
     public UserSuccessDao userSuccessDao;
     public Long dateInt;
+    private boolean mAssistantUser = false;
+    private int TYPE_QUESTION;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +52,32 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
         getDateQuiz();
 
 
-        // intent use for a userName with InitialActivity
+        //
         Intent intent = getIntent();
+        TYPE_QUESTION = intent.getIntExtra("TYPE_QUESTION",0);
+        switch ( TYPE_QUESTION){
+            case TYPE_QUESTION_0:
+                mQuestionId = 1;
+                mCVTType = 1;
+                mAssistantUser = false;
+                TYPE_QUESTION = 1;
+                break;
+            case TYPE_QUESTION_1:
+                mQuestionId = 1;
+                mCVTType = 3;
+                mAssistantUser = true;
+                break;
+            case TYPE_QUESTION_2:
+                mQuestionId = 2;
+                mCVTType = 3;
+                mAssistantUser = true;
+                break;
+            case TYPE_QUESTION_3:
+                mQuestionId = 3;
+                mCVTType = 3;
+                mAssistantUser = true;
+                break;
+        }
 
         // create daoSession to access the database
         DaoSession daoSession = ((QuizApplication) getApplication()).getDaoSession();
@@ -63,7 +95,7 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
             @Override
             public void onClick(View v) {
                 if (mQuestionId < 10) {
-                    mQuestionId = mQuestionId + 1;
+                    mQuestionId = mQuestionId + mCVTType;
                     updateFragment();
                 }
             }
@@ -72,8 +104,8 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mQuestionId > 1) {
-                    mQuestionId = mQuestionId - 1;
+                if (mQuestionId > TYPE_QUESTION) {
+                    mQuestionId = mQuestionId - mCVTType;
                     updateFragment();
                 }
             }
@@ -107,11 +139,11 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
         userSuccess.setDateAnswer(dateInt);
         userSuccessDao.insertOrReplace(userSuccess);
 
-        if (mRightAnswer.equals(data)){
+        if (mRightAnswer.equals(data) & mAssistantUser){
                Toast.makeText(TrialActivity.this,"Це правильна відповідь",Toast.LENGTH_SHORT).show();
-           }else {
+           }else if (mAssistantUser){
                Toast.makeText(TrialActivity.this, " Ой це не зовсім правильно",Toast.LENGTH_SHORT).show();
-           
+
         }
     }
 

@@ -8,4 +8,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="enter_your_version">ENTER YOUR VERSION</string>
+    <string name="training">TRAINING</string>
+    <string name="orthography">Orthography</string>
+    <string name="purity_of_language">Purity of language</string>
+    <string name="loanwords">Loanwords</string>
+    <string name="question_of_section">Please select where you want to work out</string>
 </resources>

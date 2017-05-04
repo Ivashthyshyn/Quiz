@@ -1,5 +1,6 @@
 package com.example.key.quiz;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,31 +25,69 @@ import java.io.InputStreamReader;
 
 
 public class InitialActivity extends AppCompatActivity {
-    //ToDo we can improve the ability to process issues with different levels of difficulty
-    public static final long TYPE_QUESTION_1 = 1;
-   // public static final long TYPE_QUESTION_2 = 2;
-   // public static final long TYPE_QUESTION_3 = 3;
+
+    public static final int TYPE_QUESTION_0 = 0;
+    public static final int TYPE_QUESTION_1 = 1;
+    public static final int TYPE_QUESTION_2 = 2;
+    public static final int TYPE_QUESTION_3 = 3;
     private Long mQuestionId;
     public QuestionDao questionDao;
     public AnswerDao answerDao;
-    public String userName;
     public SharedPreferences prefs;
+    public  AlertDialog.Builder builder;
+    private Context mContext = InitialActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial);
-        // create Tread
+        Button trainingButton = (Button)findViewById(R.id.button_training);
+        trainingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String[] mItemsName ={mContext.getResources().getString(R.string.orthography),
+                        mContext.getResources().getString(R.string.purity_of_language),
+                        mContext.getResources().getString(R.string.loanwords)};
+                builder = new AlertDialog.Builder(InitialActivity.this);
+                builder.setTitle( mContext.getResources().getString(R.string.question_of_section));
+                builder.setItems(mItemsName, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                       switch (item){
+                           case 0:
+                               goToTrialActivity(TYPE_QUESTION_1);
+                               dialog.cancel();
+                               break;
+                           case 1:
+                               goToTrialActivity(TYPE_QUESTION_2);
+                               dialog.cancel();
+                               break;
+                           case 2:
+                               goToTrialActivity(TYPE_QUESTION_3);
+                               dialog.cancel();
+                               break;
+                       }
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+
+            }
+        });
         checkFirstRun();
         Button startButton = (Button)findViewById(R.id.startQuizButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentTrialActivity = new Intent(InitialActivity.this, TrialActivity.class);
-                intentTrialActivity.putExtra("userName",userName);
-                startActivity(intentTrialActivity);
+                goToTrialActivity(TYPE_QUESTION_0);
             }
         });
+    }
+
+    private void goToTrialActivity(int TYPE_QUESTION) {
+        Intent intentTrialActivity = new Intent(InitialActivity.this, TrialActivity.class);
+        intentTrialActivity.putExtra("TYPE_QUESTION",TYPE_QUESTION);
+        startActivity(intentTrialActivity);
     }
 
     /**
@@ -135,7 +174,7 @@ public class InitialActivity extends AppCompatActivity {
             LoadingThread loadingThread = new LoadingThread();
             loadingThread.start();
             // creating dialogue for user input his name
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder = new AlertDialog.Builder(this);
             final EditText userNameInput = new EditText(this);
 
             builder.setMessage("Вітаємо я ваш персональний провідник." +
@@ -150,10 +189,10 @@ public class InitialActivity extends AppCompatActivity {
                     });
             AlertDialog alert = builder.create();
             alert.show();
-
-        } else if (currentVersionCode > savedVersionCode) {
-
             // TODO This is an upgrade
+        //} else if (currentVersionCode > savedVersionCode) {
+
+
         }
 
         // Update the shared preferences with the current version code
