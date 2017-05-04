@@ -1,6 +1,7 @@
 package com.example.key.quiz;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,9 @@ import com.example.key.quiz.database.UserSuccessDao;
 
 import org.greenrobot.greendao.query.Query;
 
+import java.util.Calendar;
+import java.util.Date;
+
 
 public class TrialActivity extends AppCompatActivity implements Communicator{
     public QuestionDao questionDao;
@@ -31,15 +35,18 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
     private long mQuestionId = 1;
     private String mRightAnswer;
     public UserSuccessDao userSuccessDao;
-    public String userName;
+    public Long dateInt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trial);
+        getDateQuiz();
+
+
         // intent use for a userName with InitialActivity
         Intent intent = getIntent();
-        userName = intent.getStringExtra("userName");
+
         // create daoSession to access the database
         DaoSession daoSession = ((QuizApplication) getApplication()).getDaoSession();
         questionDao = daoSession.getQuestionDao();
@@ -91,17 +98,26 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
      */
     @Override
     public void processingUserAnswer(String data) {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        String userName = preferences.getString("userName","");
         UserSuccess userSuccess = new UserSuccess();
         userSuccess.setUserAnswer(data);
         userSuccess.setUserName(userName);
         userSuccess.setQuestionId(mQuestionId);
-        userSuccess.setDateAnswer(1);
+        userSuccess.setDateAnswer(dateInt);
         userSuccessDao.insertOrReplace(userSuccess);
+
         if (mRightAnswer.equals(data)){
                Toast.makeText(TrialActivity.this,"Це правильна відповідь",Toast.LENGTH_SHORT).show();
            }else {
                Toast.makeText(TrialActivity.this, " Ой це не зовсім правильно",Toast.LENGTH_SHORT).show();
            
         }
+    }
+
+    public void getDateQuiz() {
+        Calendar c = Calendar.getInstance();
+        Date date  = c.getTime();
+        dateInt = date.getTime();
     }
 }

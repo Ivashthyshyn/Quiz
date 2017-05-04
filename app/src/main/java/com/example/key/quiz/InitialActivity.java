@@ -32,6 +32,7 @@ public class InitialActivity extends AppCompatActivity {
     public QuestionDao questionDao;
     public AnswerDao answerDao;
     public String userName;
+    public SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +113,7 @@ public class InitialActivity extends AppCompatActivity {
      */
     private void checkFirstRun() {
 
-        final String PREFS_NAME = "MyPrefsFile";
+        final  String PREFS_NAME = "MyPrefsFile";
         final String PREF_VERSION_CODE_KEY = "version_code";
         final int DOESNT_EXIST = -1;
 
@@ -120,7 +121,7 @@ public class InitialActivity extends AppCompatActivity {
         int currentVersionCode = BuildConfig.VERSION_CODE;
 
         // Get saved version code
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
 
         // Check for first run or upgrade
@@ -143,7 +144,7 @@ public class InitialActivity extends AppCompatActivity {
             builder.setPositiveButton("Готово",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            userName = userNameInput.getText().toString();
+                            prefs.edit().putString("userName", userNameInput.getText().toString()).apply();
                             dialog.cancel();
                         }
                     });

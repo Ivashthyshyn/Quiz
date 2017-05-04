@@ -24,7 +24,7 @@ public class UserSuccess {
     private String userAnswer;
 
     @NotNull
-    private int dateAnswer;
+    private Long dateAnswer;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -34,9 +34,9 @@ public class UserSuccess {
     @Generated(hash = 1972645282)
     private transient UserSuccessDao myDao;
 
-    @Generated(hash = 1659990874)
+    @Generated(hash = 510732687)
     public UserSuccess(Long id, @NotNull String userName, @NotNull Long questionId,
-            @NotNull String userAnswer, int dateAnswer) {
+            @NotNull String userAnswer, @NotNull Long dateAnswer) {
         this.id = id;
         this.userName = userName;
         this.questionId = questionId;
@@ -80,11 +80,11 @@ public class UserSuccess {
         this.userAnswer = userAnswer;
     }
 
-    public int getDateAnswer() {
+    public Long getDateAnswer() {
         return this.dateAnswer;
     }
 
-    public void setDateAnswer(int dateAnswer) {
+    public void setDateAnswer(Long dateAnswer) {
         this.dateAnswer = dateAnswer;
     }
 
@@ -130,5 +130,7 @@ public class UserSuccess {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getUserSuccessDao() : null;
     }
+
+ 
 
 }

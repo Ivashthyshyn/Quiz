@@ -26,7 +26,7 @@ public class UserSuccessDao extends AbstractDao<UserSuccess, Long> {
         public final static Property UserName = new Property(1, String.class, "userName", false, "USER_NAME");
         public final static Property QuestionId = new Property(2, Long.class, "questionId", false, "QUESTION_ID");
         public final static Property UserAnswer = new Property(3, String.class, "userAnswer", false, "USER_ANSWER");
-        public final static Property DateAnswer = new Property(4, int.class, "dateAnswer", false, "DATE_ANSWER");
+        public final static Property DateAnswer = new Property(4, Long.class, "dateAnswer", false, "DATE_ANSWER");
     }
 
     private DaoSession daoSession;
@@ -104,7 +104,7 @@ public class UserSuccessDao extends AbstractDao<UserSuccess, Long> {
             cursor.getString(offset + 1), // userName
             cursor.getLong(offset + 2), // questionId
             cursor.getString(offset + 3), // userAnswer
-            cursor.getInt(offset + 4) // dateAnswer
+            cursor.getLong(offset + 4) // dateAnswer
         );
         return entity;
     }
@@ -115,7 +115,7 @@ public class UserSuccessDao extends AbstractDao<UserSuccess, Long> {
         entity.setUserName(cursor.getString(offset + 1));
         entity.setQuestionId(cursor.getLong(offset + 2));
         entity.setUserAnswer(cursor.getString(offset + 3));
-        entity.setDateAnswer(cursor.getInt(offset + 4));
+        entity.setDateAnswer(cursor.getLong(offset + 4));
      }
     
     @Override
