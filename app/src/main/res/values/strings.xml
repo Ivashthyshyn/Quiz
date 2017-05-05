@@ -13,4 +13,7 @@
     <string name="purity_of_language">Purity of language</string>
     <string name="loanwords">Loanwords</string>
     <string name="question_of_section">Please select where you want to work out</string>
+    <string name="warning_masage">An error occurred while loading data</string>
+    <string name="assistant_heloo">Hi I\'m your personal assistant! Please enter your name or nickname for further communication</string>
+    <string name="ready">Ready</string>
 </resources>

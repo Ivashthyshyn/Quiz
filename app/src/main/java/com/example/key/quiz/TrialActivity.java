@@ -24,6 +24,8 @@ import org.greenrobot.greendao.query.Query;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.example.key.quiz.InitialActivity.DIFFICULTY_LEVEL;
+import static com.example.key.quiz.InitialActivity.PREFS_NAME;
 import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_0;
 import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_1;
 import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_2;
@@ -31,29 +33,31 @@ import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_3;
 
 
 public class TrialActivity extends AppCompatActivity implements Communicator{
+    public String userName;
     public QuestionDao questionDao;
     public AnswerDao answerDao;
+    public UserSuccessDao userSuccessDao;
     public TextView textQuestion;
     public FragmentManager fragmentManager;
     public SelectorFragment fragmentButton;
     public Query<Answer> answerQuery;
+    public Long dateLong;
     private long mQuestionId = 1;
     private int mCVTType = 1;
     private String mRightAnswer;
-    public UserSuccessDao userSuccessDao;
-    public Long dateInt;
+    private String mData;
     private boolean mAssistantUser = false;
     private int TYPE_QUESTION;
+    private  SharedPreferences mPreferences;
+    private int mLevelQuiz;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trial);
         getDateQuiz();
-
-
-        //
-        Intent intent = getIntent();
+        // get data with InitialActivity
+        final Intent intent = getIntent();
         TYPE_QUESTION = intent.getIntExtra("TYPE_QUESTION",0);
         switch ( TYPE_QUESTION){
             case TYPE_QUESTION_0:
@@ -78,7 +82,7 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
                 mAssistantUser = true;
                 break;
         }
-
+        changeLevelQuiz();
         // create daoSession to access the database
         DaoSession daoSession = ((QuizApplication) getApplication()).getDaoSession();
         questionDao = daoSession.getQuestionDao();
@@ -94,9 +98,14 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mQuestionId < 10) {
+                if (mQuestionId < mLevelQuiz) {
                     mQuestionId = mQuestionId + mCVTType;
                     updateFragment();
+                }else {
+                    Intent intentFinishActivity = new Intent(TrialActivity.this,FinishActivity.class);
+                    intentFinishActivity.putExtra("userName",userName);
+                    intentFinishActivity.putExtra("date", dateLong);
+                    startActivity(intentFinishActivity);
                 }
             }
         });
@@ -107,13 +116,26 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
                 if (mQuestionId > TYPE_QUESTION) {
                     mQuestionId = mQuestionId - mCVTType;
                     updateFragment();
+                }else {
+                    mQuestionId = TYPE_QUESTION;
+                    updateFragment();
                 }
             }
         });
     }
 
     /**
-     * this updates fragment for each new question and loads the correct answer
+     * This get DIFFICULTY_LEVEL in SharedPreferences
+     * and sort question in accordance with the level of difficulty
+     */
+    private void changeLevelQuiz() {
+        mPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        mLevelQuiz = mPreferences.getInt(DIFFICULTY_LEVEL,mLevelQuiz);
+        mQuestionId = (mLevelQuiz - 10)+ mQuestionId;
+    }
+
+    /**
+     * This updates fragment for each new question and loads the correct answer
      */
     private void updateFragment() {
         Question question = questionDao.load(mQuestionId);
@@ -130,26 +152,41 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
      */
     @Override
     public void processingUserAnswer(String data) {
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        String userName = preferences.getString("userName","");
-        UserSuccess userSuccess = new UserSuccess();
-        userSuccess.setUserAnswer(data);
-        userSuccess.setUserName(userName);
-        userSuccess.setQuestionId(mQuestionId);
-        userSuccess.setDateAnswer(dateInt);
-        userSuccessDao.insertOrReplace(userSuccess);
 
-        if (mRightAnswer.equals(data) & mAssistantUser){
-               Toast.makeText(TrialActivity.this,"Це правильна відповідь",Toast.LENGTH_SHORT).show();
-           }else if (mAssistantUser){
-               Toast.makeText(TrialActivity.this, " Ой це не зовсім правильно",Toast.LENGTH_SHORT).show();
+        mData = data;
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                userName = mPreferences.getString("userName", "");
+                UserSuccess userSuccess = new UserSuccess();
+                userSuccess.setId(mQuestionId);
+                userSuccess.setUserAnswer(mData);
+                userSuccess.setUserName(userName);
+                userSuccess.setQuestionId(mQuestionId);
+                userSuccess.setDateAnswer(dateLong);
+                userSuccessDao.insertOrReplace(userSuccess);
+            }
+        });
+       thread.start();
+        // ToDo need create Dialog Assistant and his logic
+        if (mRightAnswer.equals(data) & mAssistantUser) {
+            Toast.makeText(TrialActivity.this, "Це правильна відповідь", Toast.LENGTH_SHORT).show();
+        } else if (mAssistantUser) {
+            Toast.makeText(TrialActivity.this, " Ой це не зовсім правильно", Toast.LENGTH_SHORT).show();
 
         }
     }
 
+    /**
+     * This date implementation quiz for saving users results in database
+     */
     public void getDateQuiz() {
         Calendar c = Calendar.getInstance();
         Date date  = c.getTime();
-        dateInt = date.getTime();
+        dateLong = date.getTime();
     }
+
+
+
 }

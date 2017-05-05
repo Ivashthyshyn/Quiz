@@ -26,17 +26,20 @@ import java.io.InputStreamReader;
 
 public class InitialActivity extends AppCompatActivity {
 
+    public static final  String PREFS_NAME = "MyPrefsFile";
     public static final int TYPE_QUESTION_0 = 0;
     public static final int TYPE_QUESTION_1 = 1;
     public static final int TYPE_QUESTION_2 = 2;
     public static final int TYPE_QUESTION_3 = 3;
-    private Long mQuestionId;
+    public static final String DIFFICULTY_LEVEL = "difficulty_level";
+    public static final int LEVEL_1 = 10;
+    public static final int LEVEL_2 = 20;
     public QuestionDao questionDao;
     public AnswerDao answerDao;
     public SharedPreferences prefs;
     public  AlertDialog.Builder builder;
     private Context mContext = InitialActivity.this;
-
+    private Long mQuestionId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,68 +94,10 @@ public class InitialActivity extends AppCompatActivity {
     }
 
     /**
-     * This a thread for load quiz.txt to quiz.db
-     */
-    private class LoadingThread extends Thread {
-        public void run() {
-            // created daoSession  to access a database of questions and answers
-            DaoSession daoSession = ((QuizApplication)getApplication()).getDaoSession();
-            questionDao = daoSession.getQuestionDao();
-            answerDao = daoSession.getAnswerDao();
-
-            BufferedReader bufferedReader = null;
-            try {
-                bufferedReader = new BufferedReader(new InputStreamReader(getAssets().open("quiz.txt"),"UTF-8"));
-
-                String mLine;
-                while ((mLine = bufferedReader.readLine()) != null){
-                    if(mLine.contains("?")){
-                        Question question = new Question();
-                        question.setType(TYPE_QUESTION_1);
-                        question.setRightAnswer("");
-                        question.setQuestions(mLine.substring(2));
-                        questionDao.insert(question);
-                        mQuestionId = question.getId();
-                    }else if (mLine.contains("-")){
-                        Answer answer = new Answer();
-                        answer.setAnswers(mLine.substring(2));
-                        answer.setQuestionId(mQuestionId);
-                        answerDao.insert(answer);
-                    }else if (mLine.contains("+")){
-                        Answer answer = new Answer();
-                        answer.setAnswers(mLine.substring(2));
-                        answer.setQuestionId(mQuestionId);
-                        answerDao.insert(answer);
-                        Question question = questionDao.load(mQuestionId);
-                        question.setRightAnswer(mLine.substring(2));
-                        questionDao.insertOrReplace(question);
-                    }else if(mLine.contains("!")){
-                        Question question = questionDao.load(mQuestionId);
-                        question.setRightAnswer(mLine.substring(2));
-                        questionDao.insertOrReplace(question);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (bufferedReader != null){
-                    try {
-                        bufferedReader.close();
-                    } catch (IOException e){
-                        Toast.makeText(InitialActivity.this, "Виникла помилка при завантаженні бази данх",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * This checks the application on first launch and logic to determine various options
      */
     private void checkFirstRun() {
 
-        final  String PREFS_NAME = "MyPrefsFile";
         final String PREF_VERSION_CODE_KEY = "version_code";
         final int DOESNT_EXIST = -1;
 
@@ -170,20 +115,72 @@ public class InitialActivity extends AppCompatActivity {
             return;
 
         } else if (savedVersionCode == DOESNT_EXIST) {
+            // This a thread for load quiz.txt to quiz.db
+            Thread loadingThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    DaoSession daoSession = ((QuizApplication)getApplication()).getDaoSession();
+                    questionDao = daoSession.getQuestionDao();
+                    answerDao = daoSession.getAnswerDao();
 
-            LoadingThread loadingThread = new LoadingThread();
+                    BufferedReader bufferedReader = null;
+                    try {
+                        bufferedReader = new BufferedReader(new InputStreamReader(getAssets().open("quiz.txt"),"UTF-8"));
+
+                        String mLine;
+                        while ((mLine = bufferedReader.readLine()) != null){
+                            if(mLine.contains("?")){
+                                Question question = new Question();
+                                question.setType(TYPE_QUESTION_1);
+                                question.setRightAnswer("");
+                                question.setQuestions(mLine.substring(2));
+                                questionDao.insert(question);
+                                mQuestionId = question.getId();
+                            }else if (mLine.contains("-")){
+                                Answer answer = new Answer();
+                                answer.setAnswers(mLine.substring(2));
+                                answer.setQuestionId(mQuestionId);
+                                answerDao.insert(answer);
+                            }else if (mLine.contains("+")){
+                                Answer answer = new Answer();
+                                answer.setAnswers(mLine.substring(2));
+                                answer.setQuestionId(mQuestionId);
+                                answerDao.insert(answer);
+                                Question question = questionDao.load(mQuestionId);
+                                question.setRightAnswer(mLine.substring(2));
+                                questionDao.insertOrReplace(question);
+                            }else if(mLine.contains("!")){
+                                Question question = questionDao.load(mQuestionId);
+                                question.setRightAnswer(mLine.substring(2));
+                                questionDao.insertOrReplace(question);
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (bufferedReader != null){
+                            try {
+                                bufferedReader.close();
+                            } catch (IOException e){
+                                Toast.makeText(InitialActivity.this, mContext.getResources().getString(R.string.warning_masage),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }
+            });
             loadingThread.start();
             // creating dialogue for user input his name
             builder = new AlertDialog.Builder(this);
             final EditText userNameInput = new EditText(this);
 
-            builder.setMessage("Вітаємо я ваш персональний провідник." +
-                    "Будь-ласка введіть своє імя чи нік для подальшої роботи з вами");
+            builder.setMessage(mContext.getResources().getString(R.string.assistant_heloo));
             builder.setView(userNameInput);
-            builder.setPositiveButton("Готово",
+            builder.setPositiveButton(mContext.getResources().getString(R.string.ready),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             prefs.edit().putString("userName", userNameInput.getText().toString()).apply();
+                            prefs.edit().putInt(DIFFICULTY_LEVEL, LEVEL_1).apply();
                             dialog.cancel();
                         }
                     });

@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.example.key.quiz.database.Answer;
 
@@ -67,8 +66,6 @@ public class SelectorFragment extends Fragment implements View.OnClickListener {
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
                     if (event.getAction() == KeyEvent.ACTION_DOWN &&
                             (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                            Toast.makeText(getActivity(), "Введений варіант "+ (userAnswer.getText().toString()),
-                                    Toast.LENGTH_SHORT).show();
                             mCommunicator.processingUserAnswer(userAnswer.getText().toString());
                         return true;
                     }
@@ -89,6 +86,7 @@ public class SelectorFragment extends Fragment implements View.OnClickListener {
                 button.setButtonDrawable(R.drawable.rounded_button);
                 button.setBackgroundResource(R.drawable.radiobutton_selector);
                 button.setPadding(10, 0, 10, 0);
+                button.setTextSize(20);
                 button.setGravity(Gravity.CENTER);
                 button.setOnClickListener(this);
                 radioGroup.addView(button);
@@ -106,6 +104,7 @@ public class SelectorFragment extends Fragment implements View.OnClickListener {
                 button.setBackgroundResource(R.drawable.radiobutton_selector);
                 button.setPadding(10, 10, 10, 10);
                 button.setGravity(Gravity.CENTER);
+                button.setTextSize(20);
                 button.setOnClickListener(this);
                 radioGroup.addView(button);
             }
@@ -126,6 +125,6 @@ public class SelectorFragment extends Fragment implements View.OnClickListener {
     public void onClick(View radioButton) {
         RadioButton pressedButton = (RadioButton)radioButton;
         mCommunicator.processingUserAnswer(pressedButton.getText().toString());
-        Toast.makeText(getContext(), "Вибрана відповідь " + (pressedButton.getText().toString()) , Toast.LENGTH_SHORT).show();
+
     }
 }

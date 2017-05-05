@@ -1,17 +1,17 @@
 package com.example.key.quiz.database;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 /**
  * Created by Key on 03.05.2017.
  */
 @Entity(active = true, nameInDb = "USER_SUCCESS")
 public class UserSuccess {
-    @Id(autoincrement = true)
+    @Id
     private Long id;
 
     @NotNull
@@ -131,6 +131,6 @@ public class UserSuccess {
         myDao = daoSession != null ? daoSession.getUserSuccessDao() : null;
     }
 
- 
+
 
 }

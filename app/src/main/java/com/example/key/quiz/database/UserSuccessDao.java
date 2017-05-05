@@ -45,7 +45,7 @@ public class UserSuccessDao extends AbstractDao<UserSuccess, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"USER_SUCCESS\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
                 "\"USER_NAME\" TEXT NOT NULL ," + // 1: userName
                 "\"QUESTION_ID\" INTEGER NOT NULL ," + // 2: questionId
                 "\"USER_ANSWER\" TEXT NOT NULL ," + // 3: userAnswer
