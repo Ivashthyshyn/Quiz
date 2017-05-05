@@ -188,8 +188,6 @@ public class InitialActivity extends AppCompatActivity {
             alert.show();
             // TODO This is an upgrade
         //} else if (currentVersionCode > savedVersionCode) {
-
-
         }
 
         // Update the shared preferences with the current version code
