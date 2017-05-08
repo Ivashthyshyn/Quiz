@@ -1,10 +1,10 @@
 package com.example.key.quiz.database;
 
-import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.DaoException;
 
 /**
  * Created by Key on 03.05.2017.
@@ -18,7 +18,7 @@ public class UserSuccess {
     private String userName;
 
     @NotNull
-    private Long questionId;
+    private Long userQuestionId;
 
     @NotNull
     private String userAnswer;
@@ -34,12 +34,13 @@ public class UserSuccess {
     @Generated(hash = 1972645282)
     private transient UserSuccessDao myDao;
 
-    @Generated(hash = 510732687)
-    public UserSuccess(Long id, @NotNull String userName, @NotNull Long questionId,
-            @NotNull String userAnswer, @NotNull Long dateAnswer) {
+    @Generated(hash = 1319570442)
+    public UserSuccess(Long id, @NotNull String userName,
+            @NotNull Long userQuestionId, @NotNull String userAnswer,
+            @NotNull Long dateAnswer) {
         this.id = id;
         this.userName = userName;
-        this.questionId = questionId;
+        this.userQuestionId = userQuestionId;
         this.userAnswer = userAnswer;
         this.dateAnswer = dateAnswer;
     }
@@ -64,12 +65,12 @@ public class UserSuccess {
         this.userName = userName;
     }
 
-    public Long getQuestionId() {
-        return this.questionId;
+    public Long getUserQuestionId() {
+        return this.userQuestionId;
     }
 
-    public void setQuestionId(Long questionId) {
-        this.questionId = questionId;
+    public void setUserQuestionId(Long userQuestionId) {
+        this.userQuestionId = userQuestionId;
     }
 
     public String getUserAnswer() {
@@ -130,7 +131,5 @@ public class UserSuccess {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getUserSuccessDao() : null;
     }
-
-
 
 }

@@ -13,10 +13,15 @@
         android:text="TextView"
         tools:layout_editor_absoluteX="144dp"
         tools:layout_editor_absoluteY="256dp"
+        android:layout_marginTop="39dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="153dp"
-        android:layout_marginStart="153dp"
-        android:layout_marginTop="217dp" />
+        android:layout_centerHorizontal="true" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/recyclerView"
+        android:layout_below="@+id/result"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="23dp" />
 </RelativeLayout>

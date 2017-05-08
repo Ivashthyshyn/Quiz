@@ -31,9 +31,12 @@ public class InitialActivity extends AppCompatActivity {
     public static final int TYPE_QUESTION_1 = 1;
     public static final int TYPE_QUESTION_2 = 2;
     public static final int TYPE_QUESTION_3 = 3;
+    public static final int CHAR_POSITION_TYPE_QUESTION = 1;
+    public static final int CHAR_POSITION_LEVEL_QUESTION = 3;
+    public static final int WORK_POSITION = 3;
     public static final String DIFFICULTY_LEVEL = "difficulty_level";
-    public static final int LEVEL_1 = 10;
-    public static final int LEVEL_2 = 20;
+    public static final int LEVEL_1 = 1;
+    public static final int LEVEL_2 = 2;
     public QuestionDao questionDao;
     public AnswerDao answerDao;
     public SharedPreferences prefs;
@@ -131,9 +134,10 @@ public class InitialActivity extends AppCompatActivity {
                         while ((mLine = bufferedReader.readLine()) != null){
                             if(mLine.contains("?")){
                                 Question question = new Question();
-                                question.setType(TYPE_QUESTION_1);
+                                question.setType(Character.getNumericValue(mLine.charAt(CHAR_POSITION_TYPE_QUESTION)));
+                                question.setLevel(Character.getNumericValue(mLine.charAt(CHAR_POSITION_LEVEL_QUESTION)));
                                 question.setRightAnswer("");
-                                question.setQuestions(mLine.substring(2));
+                                question.setQuestions(mLine.substring(WORK_POSITION));
                                 questionDao.insert(question);
                                 mQuestionId = question.getId();
                             }else if (mLine.contains("-")){

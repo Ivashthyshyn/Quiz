@@ -23,6 +23,7 @@ import org.greenrobot.greendao.query.Query;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static com.example.key.quiz.InitialActivity.DIFFICULTY_LEVEL;
 import static com.example.key.quiz.InitialActivity.PREFS_NAME;
@@ -42,48 +43,23 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
     public SelectorFragment fragmentButton;
     public Query<Answer> answerQuery;
     public Long dateLong;
-    private long mQuestionId = 1;
-    private int mCVTType = 1;
+    private int mQuestionNumber = 0;
+    private int mNumberOfQuestion = 1;
     private String mRightAnswer;
     private String mData;
     private boolean mAssistantUser = false;
     private int TYPE_QUESTION;
     private  SharedPreferences mPreferences;
     private int mLevelQuiz;
+    private Query<Question> mQueryQuestion;
+    private List<Question> mListQuestion;
+    private Long mQuestionId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trial);
         getDateQuiz();
-        // get data with InitialActivity
-        final Intent intent = getIntent();
-        TYPE_QUESTION = intent.getIntExtra("TYPE_QUESTION",0);
-        switch ( TYPE_QUESTION){
-            case TYPE_QUESTION_0:
-                mQuestionId = 1;
-                mCVTType = 1;
-                mAssistantUser = false;
-                TYPE_QUESTION = 1;
-                break;
-            case TYPE_QUESTION_1:
-                mQuestionId = 1;
-                mCVTType = 3;
-                mAssistantUser = true;
-                break;
-            case TYPE_QUESTION_2:
-                mQuestionId = 2;
-                mCVTType = 3;
-                mAssistantUser = true;
-                break;
-            case TYPE_QUESTION_3:
-                mQuestionId = 3;
-                mCVTType = 3;
-                mAssistantUser = true;
-                break;
-        }
-        changeLevelQuiz();
-        // create daoSession to access the database
         DaoSession daoSession = ((QuizApplication) getApplication()).getDaoSession();
         questionDao = daoSession.getQuestionDao();
         answerDao = daoSession.getAnswerDao();
@@ -91,15 +67,42 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
         textQuestion = (TextView)findViewById(R.id.textQuestion);
         fragmentManager = getSupportFragmentManager();
         fragmentButton = (SelectorFragment) fragmentManager.findFragmentById(R.id.fragment_button);
-        updateFragment();
 
-
+        // get data with InitialActivity
+        final Intent intent = getIntent();
+        TYPE_QUESTION = intent.getIntExtra("TYPE_QUESTION",0);
+        switch ( TYPE_QUESTION){
+            case TYPE_QUESTION_0:
+                changeLevelQuiz();
+               mQueryQuestion = questionDao.queryBuilder()
+                       .where(QuestionDao.Properties.Level.eq(mLevelQuiz)).build();
+                updateFragment();
+                break;
+            case TYPE_QUESTION_1:
+                mQueryQuestion = questionDao.queryBuilder()
+                        .where(QuestionDao.Properties.Type.eq(TYPE_QUESTION_1)).build();
+                mAssistantUser = true;
+                updateFragment();
+                break;
+            case TYPE_QUESTION_2:
+                mQueryQuestion = questionDao.queryBuilder()
+                        .where(QuestionDao.Properties.Type.eq(TYPE_QUESTION_2)).build();
+                mAssistantUser = true;
+                updateFragment();
+                break;
+            case TYPE_QUESTION_3:
+                mQueryQuestion = questionDao.queryBuilder()
+                        .where(QuestionDao.Properties.Type.eq(TYPE_QUESTION_3)).build();
+                mAssistantUser = true;
+                updateFragment();
+                break;
+        }
         Button nextButton = (Button)findViewById(R.id.next_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mQuestionId < mLevelQuiz) {
-                    mQuestionId = mQuestionId + mCVTType;
+                if (mQuestionNumber < mNumberOfQuestion) {
+                    mQuestionNumber = mQuestionNumber + 1;
                     updateFragment();
                 }else {
                     Intent intentFinishActivity = new Intent(TrialActivity.this,FinishActivity.class);
@@ -113,11 +116,8 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mQuestionId > TYPE_QUESTION) {
-                    mQuestionId = mQuestionId - mCVTType;
-                    updateFragment();
-                }else {
-                    mQuestionId = TYPE_QUESTION;
+                if (mQuestionNumber > 1) {
+                    mQuestionNumber = mQuestionNumber + 1;
                     updateFragment();
                 }
             }
@@ -131,18 +131,19 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
     private void changeLevelQuiz() {
         mPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         mLevelQuiz = mPreferences.getInt(DIFFICULTY_LEVEL,mLevelQuiz);
-        mQuestionId = (mLevelQuiz - 10)+ mQuestionId;
-    }
+         }
 
     /**
      * This updates fragment for each new question and loads the correct answer
      */
     private void updateFragment() {
-        Question question = questionDao.load(mQuestionId);
+        mNumberOfQuestion = mQueryQuestion.list().size();
+        Question question = mQueryQuestion.list().get(mQuestionNumber);
         mRightAnswer = question.getRightAnswer();
+        mQuestionId = question.getId();
         textQuestion.setText(question.getQuestions());
         answerQuery = answerDao.queryBuilder().where(AnswerDao.Properties.QuestionId
-                .eq(question.getId())).build();
+                .eq(mQuestionId)).build();
             fragmentButton.loadAnswer(answerQuery);
     }
 
@@ -160,10 +161,10 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
                 mPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
                 userName = mPreferences.getString("userName", "");
                 UserSuccess userSuccess = new UserSuccess();
-                userSuccess.setId(mQuestionId);
+                userSuccess.setId((long) mQuestionNumber);
                 userSuccess.setUserAnswer(mData);
                 userSuccess.setUserName(userName);
-                userSuccess.setQuestionId(mQuestionId);
+                userSuccess.setUserQuestionId(mQuestionId);
                 userSuccess.setDateAnswer(dateLong);
                 userSuccessDao.insertOrReplace(userSuccess);
             }
@@ -177,7 +178,6 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
 
         }
     }
-
     /**
      * This date implementation quiz for saving users results in database
      */
