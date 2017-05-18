@@ -16,4 +16,9 @@
     <string name="warning_masage">An error occurred while loading data</string>
     <string name="assistant_heloo">Hi I\'m your personal assistant! Please enter your name or nickname for further communication</string>
     <string name="ready">Ready</string>
+    <string name="results">Results of</string>
+    <string name="assistant_question_1">Ти можеш змінити стартові налаштування тестів</string>
+    <string name="settings_question">You can change settings or user.</string>
+    <string name="right_anser">This is the correct answer</string>
+    <string name="false_answer">Try again</string>
 </resources>

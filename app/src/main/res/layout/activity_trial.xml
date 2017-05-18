@@ -8,6 +8,14 @@
     android:orientation="vertical"
     tools:context="com.example.key.quiz.TrialActivity">
 
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"></LinearLayout>
+
     <Button
         android:id="@+id/next_button"
         android:layout_width="wrap_content"
@@ -52,7 +60,7 @@
         android:textSize="24sp" />
 
     <fragment
-        android:id="@+id/fragment_button"
+        android:id="@+id/fragment_selector"
         android:name="com.example.key.quiz.SelectorFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

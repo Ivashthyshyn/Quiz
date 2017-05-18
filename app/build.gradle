@@ -1,5 +1,22 @@
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
+def AAVersion = '3.2'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+    }
+}
+
+apt {
+    arguments {
+        androidManifestFile variant.outputs[0].processResources.manifestFile
+        resourcePackageName 'com.example.key.quiz'
+    }
+}
 
 android {
     compileSdkVersion 25
@@ -25,6 +42,7 @@ greendao {
 }
 
 dependencies {
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -40,6 +58,9 @@ dependencies {
             }
         }
     }
+    apt "org.androidannotations:androidannotations:$AAVersion"
+    compile "org.androidannotations:androidannotations-api:$AAVersion"
+
     compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'org.greenrobot:greendao:3.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -48,5 +69,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-ads:10.2.1'
     compile 'com.google.android.gms:play-services-auth:10.2.1'
     compile 'com.google.firebase:firebase-messaging:10.2.1'
+    compile 'com.android.support:design:25.3.1'
     testCompile 'junit:junit:4.12'
 }

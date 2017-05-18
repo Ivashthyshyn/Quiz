@@ -9,7 +9,7 @@
     tools:context="com.example.key.quiz.TrialActivity">
 
     <fragment
-        android:id="@+id/fragment_button"
+        android:id="@+id/fragment_selector"
         android:name="com.example.key.quiz.SelectorFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
