@@ -10,15 +10,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".InitialActivity">
+        <activity android:name=".InitialActivity_">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TrialActivity" />
-        <activity android:name=".FinishActivity"></activity>
+        <activity android:name=".TrialActivity_" />
+        <activity android:name=".FinishActivity_"></activity>
     </application>
 
 </manifest>

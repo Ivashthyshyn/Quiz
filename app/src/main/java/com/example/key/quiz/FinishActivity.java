@@ -12,6 +12,7 @@ import com.example.key.quiz.database.QuizApplication;
 import com.example.key.quiz.database.UserSuccess;
 import com.example.key.quiz.database.UserSuccessDao;
 
+import org.androidannotations.annotations.EActivity;
 import org.greenrobot.greendao.query.Query;
 
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
 import static com.example.key.quiz.InitialActivity.DIFFICULTY_LEVEL;
 import static com.example.key.quiz.InitialActivity.LEVEL_2;
 import static com.example.key.quiz.InitialActivity.PREFS_NAME;
-
+@EActivity
 public class FinishActivity extends AppCompatActivity {
 
     public QuestionDao questionDao;
