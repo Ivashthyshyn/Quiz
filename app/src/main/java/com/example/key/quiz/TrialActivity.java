@@ -229,7 +229,13 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
 
     @Click(R.id.assistantImage)
     void assistantWasCklicked(){
-
+        fragmentManager = getSupportFragmentManager();
+        DialogFragment dialogFragment = new DialogFragment_();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager
+                .beginTransaction();
+        fragmentTransaction.add(R.id.container, dialogFragment);
+        fragmentTransaction.commit();
+        dialogFragment.setAssistantTalk(TrialActivity.this.getResources().getString(R.string.settings_question));
     }
 
 }

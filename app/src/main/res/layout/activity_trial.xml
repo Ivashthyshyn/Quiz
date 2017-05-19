@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@drawable/obkladinka"
     android:orientation="vertical"
     tools:context="com.example.key.quiz.TrialActivity">
 
@@ -12,18 +12,20 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/imageView"
+        android:layout_above="@+id/assistantImage"
         android:layout_centerHorizontal="true"
-        android:orientation="horizontal"></LinearLayout>
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="80dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:padding="10dp"></LinearLayout>
 
     <Button
         android:id="@+id/next_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="22dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/rounded_button"
+        android:layout_marginBottom="17dp"
+        android:background="@drawable/button_background"
         android:text="@string/next"
         android:textColor="@android:color/background_light"
         android:layout_alignParentBottom="true"
@@ -34,15 +36,12 @@
         android:id="@+id/back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/next_button"
-        android:layout_alignBottom="@+id/next_button"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="28dp"
-        android:layout_marginStart="28dp"
-        android:background="@drawable/rounded_button"
+        android:background="@drawable/button_background"
         android:text="@string/back"
-        android:textColor="@android:color/background_light" />
+        android:textColor="@android:color/background_light"
+        android:layout_alignBottom="@+id/assistantImage"
+        android:layout_alignLeft="@+id/textQuestion"
+        android:layout_alignStart="@+id/textQuestion" />
 
     <TextView
         android:id="@+id/textQuestion"
@@ -50,13 +49,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginLeft="80dp"
         android:layout_marginTop="26dp"
         android:background="@drawable/rounded_button"
         android:gravity="center"
+        android:padding="10dp"
         android:text="Question"
-        android:textColor="@android:color/background_light"
+        android:textColor="?attr/actionMenuTextColor"
         android:textSize="24sp" />
 
     <fragment
@@ -67,5 +66,13 @@
         android:layout_below="@+id/textQuestion"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="90dp" />
+
+    <ImageView
+        android:id="@+id/assistantImage"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignBottom="@+id/next_button"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@mipmap/ic_launcher_korovka" />
 
 </RelativeLayout>

@@ -5,36 +5,59 @@
     android:id="@+id/button_start"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorPrimary"
+    android:background="@drawable/obkladinka"
     android:contextClickable="true"
     tools:context="com.example.key.quiz.InitialActivity">
 
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        app:srcCompat="@mipmap/ic_launcher_korovka"
+        android:layout_centerVertical="true"
+        android:layout_alignRight="@+id/startQuizButton"
+        android:layout_alignEnd="@+id/startQuizButton"
+        android:layout_marginRight="57dp"
+        android:layout_marginEnd="57dp" />
+
     <Button
         android:id="@+id/button_training"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/startQuizButton"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/startQuizButton"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginEnd="68dp"
+        android:layout_marginRight="68dp"
         android:layout_marginTop="26dp"
-        android:background="@drawable/rounded_button"
-        android:text="@string/training" />
+        android:background="@drawable/button_background"
+        android:text="@string/training"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:textColor="@android:color/background_light" />
 
     <Button
         android:id="@+id/startQuizButton"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="50dp"
+        android:layout_alignLeft="@+id/button_training"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="20dp"
-        android:background="@drawable/rounded_button"
+        android:layout_alignStart="@+id/button_training"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/button_background"
         android:padding="10dp"
         android:text="@string/Try"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+      />
 
 </RelativeLayout>

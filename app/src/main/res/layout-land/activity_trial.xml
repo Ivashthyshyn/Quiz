@@ -4,9 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@drawable/obkladinka"
     android:orientation="vertical"
     tools:context="com.example.key.quiz.TrialActivity">
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignBottom="@+id/next_button"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@mipmap/ic_launcher_korovka" />
 
     <fragment
         android:id="@+id/fragment_selector"
@@ -26,7 +34,7 @@
         android:layout_marginTop="26dp"
         android:background="@drawable/rounded_button"
         android:text="Question"
-        android:textColor="@android:color/background_light"
+        android:textColor="?attr/actionMenuTextColor"
         android:textSize="24sp" />
 
     <Button
@@ -39,7 +47,7 @@
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="28dp"
         android:layout_marginRight="28dp"
-        android:background="@drawable/rounded_button"
+        android:background="@drawable/button_background"
         android:text="@string/next"
         android:textColor="@android:color/background_light" />
 
@@ -53,7 +61,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginLeft="34dp"
         android:layout_marginStart="34dp"
-        android:background="@drawable/rounded_button"
+        android:background="@drawable/button_background"
         android:text="@string/back"
         android:textColor="@android:color/background_light" />
 

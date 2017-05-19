@@ -8,10 +8,13 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.key.quiz.database.Answer;
@@ -56,14 +59,15 @@ public class InitialActivity extends AppCompatActivity {
     public  AlertDialog.Builder builder;
     private Context mContext = InitialActivity.this;
     private Long mQuestionId;
-
+    private AlertDialog mAlert;
 
     @ViewById(R.id.assistantImage)
-    ImageView assistantImage;
+    Button assistantImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_initial);
         checkFirstRun();
         Animation sunRiseAnimation = AnimationUtils.loadAnimation(this, R.anim.korovka_anim);
@@ -83,34 +87,42 @@ public class InitialActivity extends AppCompatActivity {
     }
 
     @Click(R.id.button_training)
-    void trainingButtonWasClicked(){
-        final String[] mItemsName ={mContext.getResources().getString(R.string.orthography),
-                mContext.getResources().getString(R.string.purity_of_language),
-                mContext.getResources().getString(R.string.loanwords)};
+    void trainingButtonWasClicked() {
         builder = new AlertDialog.Builder(InitialActivity.this);
-        builder.setTitle( mContext.getResources().getString(R.string.question_of_section));
-        builder.setItems(mItemsName, new DialogInterface.OnClickListener() {
+        LinearLayout customDialog = (LinearLayout) getLayoutInflater()
+                .inflate(R.layout.custom_dialog, null);
+        builder.setView(customDialog);
+        Button buttonOrthography = (Button)customDialog.findViewById(R.id.buttonOrthography);
+        buttonOrthography.setText(mContext.getResources().getString(R.string.orthography));
+        buttonOrthography.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int item) {
-                switch (item){
-                    case 0:
-                        goToTrialActivity(TYPE_QUESTION_1);
-                        dialog.cancel();
-                        break;
-                    case 1:
-                        goToTrialActivity(TYPE_QUESTION_2);
-                        dialog.cancel();
-                        break;
-                    case 2:
-                        goToTrialActivity(TYPE_QUESTION_3);
-                        dialog.cancel();
-                        break;
-                }
+            public void onClick(View v) {
+                goToTrialActivity(TYPE_QUESTION_1);
+                mAlert.cancel();
             }
         });
-        AlertDialog alert = builder.create();
-        alert.show();
+        Button buttonPurity = (Button)customDialog.findViewById(R.id.buttonPurity);
+        buttonPurity.setText(mContext.getResources().getString(R.string.purity_of_language));
+        buttonPurity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToTrialActivity(TYPE_QUESTION_2);
+                mAlert.cancel();
+            }
+        });
+        Button buttonLoanwords = (Button)customDialog.findViewById(R.id.buttonLoanwords);
+        buttonLoanwords.setText(mContext.getResources().getString(R.string.loanwords));
+        buttonLoanwords.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToTrialActivity(TYPE_QUESTION_3);
+                mAlert.cancel();
+            }
+        });
+        mAlert = builder.create();
+        mAlert.show();
     }
+
     @Background
     void loadingThread(){
         DaoSession daoSession = ((QuizApplication)getApplication()).getDaoSession();
@@ -209,8 +221,8 @@ public class InitialActivity extends AppCompatActivity {
     }
 
 
-    @Click(R.id.assistantImage)
-    void assistantWasCklicked(){
+   @Click(R.id.assistantImage)
+    void assistantWasClicked(){
         fragmentManager = getSupportFragmentManager();
         DialogFragment dialogFragment = new DialogFragment_();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager
@@ -219,4 +231,5 @@ public class InitialActivity extends AppCompatActivity {
         fragmentTransaction.commit();
         dialogFragment.setAssistantTalk(mContext.getResources().getString(R.string.settings_question));
     }
+
 }
