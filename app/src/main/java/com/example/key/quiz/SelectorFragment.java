@@ -67,7 +67,7 @@ public class SelectorFragment extends Fragment implements RadioGroup.OnCheckedCh
             radioGroup2.removeAllViews();
             userAnswer = new EditText(getContext());
             userAnswer.setHint(R.string.enter_your_version);
-            userAnswer.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+            userAnswer.setInputType(InputType.TYPE_CLASS_TEXT);
             radioGroup1.addView(userAnswer);
             userAnswer.setOnKeyListener(new View.OnKeyListener() {
                 @Override

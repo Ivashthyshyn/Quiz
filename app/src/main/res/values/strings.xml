@@ -21,4 +21,24 @@
     <string name="settings_question">You can change settings or user.</string>
     <string name="right_anser">This is the correct answer</string>
     <string name="false_answer">Try again</string>
+    <string name="select_section">Please! Select a section</string>
+    <string name="enter_your_name">ENTER NAME</string>
+    <string name="entry_level_1">Level 1. You need to answer ten questions are not difficult. You have one hint. To view, click on the divine cow.</string>
+    <string name="entry_level_2">Level 2. The question under level will be more complex. You have one hint. To view, click on the divine cow.</string>
+    <string name="entry_level_3">LEVEL 3. You have one hint.</string>
+    <string name="entry_level_4">LEVEL 4. Be careful when choosing the correct answer. You have one hint.</string>
+    <string name="entry_level_5">LEVEL 5. You have one hint.</string>
+    <string name="entry_level_6">LEVEL 6. You have one hint.</string>
+    <string name="entry_level_7">LEVEL 7. You have one hint.</string>
+    <string name="entry_level_8">LEVEL 8. You have one hint.</string>
+    <string name="entry_level_9">LEVEL 9. You have one hint.</string>
+    <string name="entry_level_10">LEVEL !0. You have one hint.</string>
+    <string name="no_tips">Sorry! But you used all tips.</string>
+    <string name="exit_the_training_mode">To exit the training mode, press return</string>
+    <string name="ok">OK</string>
+    <string name="view_results">VIEW RESULT</string>
+    <string name="one_error">You committed errors. But this is a very good result! You available the next level.</string>
+    <string name="two_errors">Despite the mistakes you could pass this level. Are you available next level.</string>
+    <string name="more_errors">Sorry! But you make many mistakes. You need to practice in order to open the next level.</string>
+    <string name="best_resolt">Congratulations! You passed the test flawlessly. You get access to the next level.</string>
 </resources>

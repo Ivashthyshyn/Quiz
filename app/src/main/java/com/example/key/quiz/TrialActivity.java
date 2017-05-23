@@ -1,5 +1,6 @@
 package com.example.key.quiz;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import com.example.key.quiz.database.QuizApplication;
 import com.example.key.quiz.database.UserSuccess;
 import com.example.key.quiz.database.UserSuccessDao;
 
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
@@ -28,6 +30,16 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static com.example.key.quiz.InitialActivity.DIFFICULTY_LEVEL;
+import static com.example.key.quiz.InitialActivity.LEVEL_1;
+import static com.example.key.quiz.InitialActivity.LEVEL_10;
+import static com.example.key.quiz.InitialActivity.LEVEL_2;
+import static com.example.key.quiz.InitialActivity.LEVEL_3;
+import static com.example.key.quiz.InitialActivity.LEVEL_4;
+import static com.example.key.quiz.InitialActivity.LEVEL_5;
+import static com.example.key.quiz.InitialActivity.LEVEL_6;
+import static com.example.key.quiz.InitialActivity.LEVEL_7;
+import static com.example.key.quiz.InitialActivity.LEVEL_8;
+import static com.example.key.quiz.InitialActivity.LEVEL_9;
 import static com.example.key.quiz.InitialActivity.PREFS_NAME;
 import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_0;
 import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_1;
@@ -44,6 +56,7 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
 
     @ViewById(R.id.textQuestion)
     public TextView textQuestion;
+    public DialogFragment dialogFragment;
     public FragmentManager fragmentManager;
     public SelectorFragment selectorFragment;
     public Query<Answer> answerQuery;
@@ -58,7 +71,8 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
     private Query<Question> mQueryQuestion;
     private Long mQuestionId;
     private int mTypeQuestion;
-
+    private Context mTrialContext = TrialActivity.this;
+    private int mCounterTips = 0;
     @ViewById (R.id.next_button)
     Button nextButton;
     @ViewById(R.id.back_button)
@@ -116,6 +130,8 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
                 updateFragment();
                 break;
         }
+
+
     }
 
     @Override
@@ -138,7 +154,7 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
             updateFragment();
         }else {
             Intent intentFinishActivity = new Intent(TrialActivity.this,FinishActivity_.class);
-            intentFinishActivity.putExtra("userName",userName);
+            intentFinishActivity.putExtra("userNameInput",userName);
             intentFinishActivity.putExtra("date", dateLong);
             intentFinishActivity.putExtra("level", mLevelQuiz);
             startActivity(intentFinishActivity);
@@ -161,6 +177,39 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
     private void changeLevelQuiz() {
         mPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         mLevelQuiz = mPreferences.getInt(DIFFICULTY_LEVEL,mLevelQuiz);
+        switch (mLevelQuiz){
+            case LEVEL_1:
+                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_1));
+                break;
+            case LEVEL_2:
+                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_2));
+                break;
+            case LEVEL_3:
+                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_3));
+                break;
+            case LEVEL_4:
+                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_4));
+                break;
+            case LEVEL_5:
+                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_5));
+                break;
+            case LEVEL_6:
+                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_6));
+                break;
+            case LEVEL_7:
+                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_7));
+                break;
+            case LEVEL_8:
+                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_8));
+                break;
+            case LEVEL_9:
+                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_9));
+                break;
+            case LEVEL_10:
+                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_10));
+                break;
+        }
+
          }
 
     /**
@@ -199,23 +248,11 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
     public void processingUserAnswer(String data) {
         nextButton.setVisibility(View.VISIBLE);
         mData = data;
-        // ToDo need create Dialog Assistant and his logic
+
         if (mRightAnswer.toLowerCase().equals(data.toLowerCase()) & mAssistantUser) {
-            DialogFragment dialogFragment = new DialogFragment_();
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager
-                    .beginTransaction();
-            fragmentTransaction.add(R.id.container, dialogFragment);
-            fragmentTransaction.commit();
-            dialogFragment.setAssistantTalk(TrialActivity.this.getResources()
-                    .getString(R.string.right_anser));
+            showAssistantDialog(mTrialContext.getResources().getString(R.string.right_anser));
         } else if (mAssistantUser) {
-            DialogFragment dialogFragment = new DialogFragment_();
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager
-                    .beginTransaction();
-            fragmentTransaction.add(R.id.container, dialogFragment);
-            fragmentTransaction.commit();
-            dialogFragment.setAssistantTalk(TrialActivity.this.getResources()
-                    .getString(R.string.false_answer));
+            showAssistantDialog(mTrialContext.getResources().getString(R.string.false_answer));
         }
     }
     /**
@@ -228,14 +265,34 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
     }
 
     @Click(R.id.assistantImage)
-    void assistantWasCklicked(){
-        fragmentManager = getSupportFragmentManager();
-        DialogFragment dialogFragment = new DialogFragment_();
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager
-                .beginTransaction();
-        fragmentTransaction.add(R.id.container, dialogFragment);
-        fragmentTransaction.commit();
-        dialogFragment.setAssistantTalk(TrialActivity.this.getResources().getString(R.string.settings_question));
+    void assistantWasClicked(){
+        if (mCounterTips == 0 & !mAssistantUser) {
+            showAssistantDialog(mTrialContext.getResources().getString(R.string.right_anser) +"  (" + mRightAnswer + ")");
+        }else if (!mAssistantUser){
+            showAssistantDialog(mTrialContext.getResources().getString(R.string.no_tips));
+        }else{
+            showAssistantDialog(mTrialContext.getResources().getString(R.string.exit_the_training_mode));
+        }
+        mCounterTips++;
+
     }
 
+    private void showAssistantDialog(String textDialog) {
+        fragmentManager = getSupportFragmentManager();
+        if(dialogFragment != null) {
+            fragmentManager.beginTransaction().remove(dialogFragment).commit();
+        }
+            dialogFragment = new DialogFragment_();
+            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager
+                    .beginTransaction();
+            fragmentTransaction.add(R.id.container, dialogFragment);
+            fragmentTransaction.commit();
+            dialogFragment.setAssistantTalk(textDialog);
+            autoOff(dialogFragment);
+
+    }
+    @Background(delay=4000)
+    void autoOff(DialogFragment fragment) {
+        fragmentManager.beginTransaction().remove(fragment).commit();
+    }
 }

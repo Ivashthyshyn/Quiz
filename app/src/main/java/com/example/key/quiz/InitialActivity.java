@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -49,20 +50,37 @@ public class InitialActivity extends AppCompatActivity {
     public static final String DIFFICULTY_LEVEL = "difficulty_level";
     public static final int LEVEL_1 = 1;
     public static final int LEVEL_2 = 2;
+    public static final int LEVEL_3 = 3;
+    public static final int LEVEL_4 = 4;
+    public static final int LEVEL_5 = 5;
+    public static final int LEVEL_6 = 6;
+    public static final int LEVEL_7 = 7;
+    public static final int LEVEL_8 = 8;
+    public static final int LEVEL_9 = 9;
+    public static final int LEVEL_10 = 10;
     public final String PREF_VERSION_CODE_KEY = "version_code";
     public final int DOESNT_EXIST = -1;
     public int currentVersionCode = BuildConfig.VERSION_CODE;
     public QuestionDao questionDao;
     public AnswerDao answerDao;
     public SharedPreferences prefs;
-    public FragmentManager fragmentManager;
     public  AlertDialog.Builder builder;
+    public DialogFragment dialogFragment;
     private Context mContext = InitialActivity.this;
     private Long mQuestionId;
     private AlertDialog mAlert;
+    private  EditText userNameInput;
 
     @ViewById(R.id.assistantImage)
     Button assistantImage;
+    FragmentManager fragmentManager;
+
+
+    @ViewById(R.id.button_training)
+    Button buttonTraining;
+
+    @ViewById(R.id.startQuizButton)
+    Button startQuizButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +88,8 @@ public class InitialActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_initial);
         checkFirstRun();
-        Animation sunRiseAnimation = AnimationUtils.loadAnimation(this, R.anim.korovka_anim);
-        assistantImage.startAnimation(sunRiseAnimation);
+
+
     }
 
    @Click(R.id.startQuizButton)
@@ -90,7 +108,7 @@ public class InitialActivity extends AppCompatActivity {
     void trainingButtonWasClicked() {
         builder = new AlertDialog.Builder(InitialActivity.this);
         LinearLayout customDialog = (LinearLayout) getLayoutInflater()
-                .inflate(R.layout.custom_dialog, null);
+                .inflate(R.layout.custom_dialog, (LinearLayout)findViewById(R.id.customDialog));
         builder.setView(customDialog);
         Button buttonOrthography = (Button)customDialog.findViewById(R.id.buttonOrthography);
         buttonOrthography.setText(mContext.getResources().getString(R.string.orthography));
@@ -184,6 +202,7 @@ public class InitialActivity extends AppCompatActivity {
      * This checks the application on first launch and logic to determine various options
      */
     private void checkFirstRun() {
+
         // Get saved version code
         prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
@@ -194,15 +213,17 @@ public class InitialActivity extends AppCompatActivity {
             // This is just a normal run
             // Update the shared preferences with the current version code
             prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).apply();
+            goAnimation();
 
         } else if (savedVersionCode == DOESNT_EXIST) {
             // This a thread for load quiz.txt to quiz.assistantText
             loadingThread();
             // creating dialogue for user input his name
             builder = new AlertDialog.Builder(this);
-            final EditText userNameInput = new EditText(this);
-
-            builder.setMessage(mContext.getResources().getString(R.string.assistant_heloo));
+            userNameInput = new EditText(this);
+            userNameInput.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+            View customTitle = getLayoutInflater().inflate(R.layout.custom_title,(LinearLayout)findViewById(R.id.customTitle));
+            builder.setCustomTitle(customTitle);
             builder.setView(userNameInput);
             builder.setPositiveButton(mContext.getResources().getString(R.string.ready),
                     new DialogInterface.OnClickListener() {
@@ -210,26 +231,57 @@ public class InitialActivity extends AppCompatActivity {
                             prefs.edit().putString("userName", userNameInput.getText().toString()).apply();
                             prefs.edit().putInt(DIFFICULTY_LEVEL, LEVEL_1).apply();
                             dialog.cancel();
+                            assistantImage.setVisibility(View.VISIBLE);
+                            Animation korovkaAnim = AnimationUtils.loadAnimation(mContext, R.anim.button_tread_anim);
+                            assistantImage.startAnimation(korovkaAnim);
+                            goAnimation();
                         }
                     });
             AlertDialog alert = builder.create();
             alert.show();
 
+
         // TODO This is an upgrade
         //} else if (currentVersionCode > savedVersionCode) {
         }
+
+    }
+
+    private void goAnimation() {
+        assistantImage.setVisibility(View.VISIBLE);
+        buttonTraining.setVisibility(View.VISIBLE);
+        startQuizButton.setVisibility(View.VISIBLE);
+        Animation button1Visible = AnimationUtils.loadAnimation(this, R.anim.button_tread_anim);
+        buttonTraining.startAnimation(button1Visible);
+        Animation button2Visible = AnimationUtils.loadAnimation(this, R.anim.button_start_anim);
+        startQuizButton.startAnimation(button2Visible);
+
+
     }
 
 
-   @Click(R.id.assistantImage)
+    @Click(R.id.assistantImage)
     void assistantWasClicked(){
+        showAssistantDialog(mContext.getResources().getString(R.string.settings_question));
+    }
+
+    private void showAssistantDialog(String textDialog) {
         fragmentManager = getSupportFragmentManager();
-        DialogFragment dialogFragment = new DialogFragment_();
+        if(dialogFragment != null) {
+            fragmentManager.beginTransaction().remove(dialogFragment).commit();
+        }
+        dialogFragment = new DialogFragment_();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager
                 .beginTransaction();
         fragmentTransaction.add(R.id.container, dialogFragment);
         fragmentTransaction.commit();
-        dialogFragment.setAssistantTalk(mContext.getResources().getString(R.string.settings_question));
+        dialogFragment.setAssistantTalk(textDialog);
+        autoOff(dialogFragment);
+    }
+
+    @Background(delay=2000)
+    void autoOff(DialogFragment dialogFragment) {
+       fragmentManager.beginTransaction().remove(dialogFragment).commit();
     }
 
 }

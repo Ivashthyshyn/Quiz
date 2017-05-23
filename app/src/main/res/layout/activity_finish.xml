@@ -6,16 +6,12 @@
     android:layout_height="match_parent"
     android:background="@drawable/obkladinka"
     android:gravity="center_horizontal"
-    tools:context="com.example.key.quiz.FinishActivity">
+    tools:context="com.example.key.quiz.FinishActivity"
+    android:orientation="vertical">
 
-    <HorizontalScrollView
-        android:id="@+id/horizontalScrollView"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:fillViewport="true">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/resultList"
@@ -40,6 +36,6 @@
                 android:textStyle="normal|bold" />
 
         </LinearLayout>
-    </HorizontalScrollView>
+    </ScrollView>
 
 </LinearLayout>

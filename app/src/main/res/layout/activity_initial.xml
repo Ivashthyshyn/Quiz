@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/button_start"
+    android:id="@+id/initialLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/obkladinka"
@@ -12,6 +12,12 @@
         android:id="@+id/assistantImage"
         android:layout_width="70dp"
         android:layout_height="70dp"
+        android:layout_above="@+id/startQuizButton"
+        android:layout_alignLeft="@+id/startQuizButton"
+        android:layout_alignStart="@+id/startQuizButton"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:background="@mipmap/ic_launcher_korovka"
         android:shadowColor="#A8A8A8"
         android:shadowDx="0"
@@ -20,11 +26,7 @@
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_above="@+id/startQuizButton"
-        android:layout_alignLeft="@+id/startQuizButton"
-        android:layout_alignStart="@+id/startQuizButton"
-        android:layout_marginLeft="30dp"
-        android:layout_marginStart="30dp" />
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/startQuizButton"
@@ -43,7 +45,8 @@
         android:text="@string/Try"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/button_training"
@@ -61,7 +64,8 @@
         android:text="@string/training"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="invisible" />
 
     <LinearLayout
         android:id="@+id/container"
@@ -69,10 +73,12 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/assistantImage"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="17dp"
-        android:layout_marginRight="80dp"
-        android:orientation="horizontal"
-        android:padding="10dp"/>
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="80dp"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+    </LinearLayout>
 
 
 </RelativeLayout>

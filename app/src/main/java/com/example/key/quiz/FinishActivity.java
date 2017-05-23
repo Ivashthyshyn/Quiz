@@ -1,8 +1,10 @@
 package com.example.key.quiz;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -24,7 +26,6 @@ import org.greenrobot.greendao.query.Query;
 import java.util.List;
 
 import static com.example.key.quiz.InitialActivity.DIFFICULTY_LEVEL;
-import static com.example.key.quiz.InitialActivity.LEVEL_2;
 import static com.example.key.quiz.InitialActivity.PREFS_NAME;
 
 @EActivity
@@ -34,6 +35,8 @@ public class FinishActivity extends Activity implements View.OnClickListener {
     public UserSuccessDao userSuccessDao;
     public Query<Question> rightAnswerQuery;
     public Query<UserSuccess> userAnswerQuery;
+    public AlertDialog finishAlertDialog;
+    private int mCounterWrongAnswers = 0;
 
     @ViewById(R.id.result)
     TextView rightAnswer;
@@ -47,9 +50,9 @@ public class FinishActivity extends Activity implements View.OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_finish);
 
-        String mUserName = getIntent().getStringExtra("userName");
+        String mUserName = getIntent().getStringExtra("userNameInput");
         long mDataQuiz = getIntent().getLongExtra("date",0);
-        int mLevel = getIntent().getIntExtra("level",1);
+        int mLevel = getIntent().getIntExtra("level", 1);
         DaoSession daoSession = ((QuizApplication) getApplication()).getDaoSession();
         questionDao = daoSession.getQuestionDao();
         userSuccessDao = daoSession.getUserSuccessDao();
@@ -66,14 +69,15 @@ public class FinishActivity extends Activity implements View.OnClickListener {
             button.setOnClickListener(this);
             button.setPadding(10,5,10,5);
             button.setId((listRightAnswer.get(i).getId()).intValue());
-            if (listRightAnswer.get(i).getRightAnswer().equals(listUserAnswer.get(i).getUserAnswer())) {
+            if ( listUserAnswer.get(i).getUserAnswer().toLowerCase().equals(listRightAnswer.get(i)
+                    .getRightAnswer().toLowerCase())) {
                 //TODO need change
                 button.setText("№"+ (i+1) +"  Правильно");
                 linearLayout.addView(button);
                 button.setBackgroundResource(R.drawable.rounded_button);
 
             } else {
-                //TODO need change
+                mCounterWrongAnswers++;
                 button.setText("№"+ (i+1) +"  Не правильно");
                 linearLayout.addView(button);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams
@@ -84,9 +88,42 @@ public class FinishActivity extends Activity implements View.OnClickListener {
             }
 
         }
+        AlertDialog.Builder builder = new AlertDialog.Builder(FinishActivity.this);
+        LinearLayout customDialog = (LinearLayout) getLayoutInflater()
+                .inflate(R.layout.custom_finish_dialog, (LinearLayout)findViewById(R.id.custom_finish_dialog_root));
+        TextView textGreeting = (TextView)customDialog.findViewById(R.id.textGreetings);
+        Button medal = (Button)customDialog.findViewById(R.id.medal);
+        Button buttonOk = (Button)customDialog.findViewById(R.id.buttonOk);
+        buttonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                Intent intentInitial = new Intent(FinishActivity.this,InitialActivity_.class);
+                startActivity(intentInitial);
+            }
+        });
+        Button buttonViewResult = (Button)customDialog.findViewById(R.id.buttonViewResult);
+        buttonViewResult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finishAlertDialog.cancel();
+            }
+        });
+        if(mCounterWrongAnswers == 0) {
+            textGreeting.setText(getApplication().getResources().getString(R.string.best_resolt));
+        }else if (mCounterWrongAnswers == 1){
+            textGreeting.setText(getApplication().getResources().getString(R.string.one_error));
+        }else if (mCounterWrongAnswers == 2){
+            textGreeting.setText(getApplication().getResources().getString(R.string.two_errors));
+        }else {
+            textGreeting.setText(getApplication().getResources().getString(R.string.more_errors));
+        }
+        builder.setView(customDialog);
+        finishAlertDialog = builder.create();
+        finishAlertDialog.show();
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        prefs.edit().putInt(DIFFICULTY_LEVEL, LEVEL_2).apply();
+        prefs.edit().putInt(DIFFICULTY_LEVEL, mLevel + 1).apply();
     }
 
     @Override
