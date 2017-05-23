@@ -71,14 +71,13 @@ public class FinishActivity extends Activity implements View.OnClickListener {
             button.setId((listRightAnswer.get(i).getId()).intValue());
             if ( listUserAnswer.get(i).getUserAnswer().toLowerCase().equals(listRightAnswer.get(i)
                     .getRightAnswer().toLowerCase())) {
-                //TODO need change
-                button.setText("№"+ (i+1) +"  Правильно");
+                button.setText("№"+ (i+1) + "  " + getApplication().getResources().getString(R.string.right));
                 linearLayout.addView(button);
                 button.setBackgroundResource(R.drawable.rounded_button);
 
             } else {
                 mCounterWrongAnswers++;
-                button.setText("№"+ (i+1) +"  Не правильно");
+                button.setText("№"+ (i+1) + "  " + getApplication().getResources().getString(R.string.not_right));
                 linearLayout.addView(button);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams
                         (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);

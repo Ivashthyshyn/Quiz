@@ -41,4 +41,6 @@
     <string name="two_errors">Despite the mistakes you could pass this level. Are you available next level.</string>
     <string name="more_errors">Sorry! But you make many mistakes. You need to practice in order to open the next level.</string>
     <string name="best_resolt">Congratulations! You passed the test flawlessly. You get access to the next level.</string>
+    <string name="right">Right</string>
+    <string name="not_right">Not right</string>
 </resources>
