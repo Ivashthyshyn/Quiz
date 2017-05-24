@@ -121,8 +121,10 @@ public class FinishActivity extends Activity implements View.OnClickListener {
         builder.setView(customDialog);
         finishAlertDialog = builder.create();
         finishAlertDialog.show();
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        prefs.edit().putInt(DIFFICULTY_LEVEL, mLevel + 1).apply();
+        if (mLevel !=9) {
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            prefs.edit().putInt(DIFFICULTY_LEVEL, mLevel + 1).apply();
+        }
     }
 
     @Override
