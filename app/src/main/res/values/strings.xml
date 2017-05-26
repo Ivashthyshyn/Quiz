@@ -16,11 +16,11 @@
     <string name="warning_masage">An error occurred while loading data</string>
     <string name="assistant_heloo">Hi I\'m your personal assistant! Please enter your name or nickname for further communication</string>
     <string name="ready">Ready</string>
-    <string name="results">Results of</string>
-    <string name="assistant_question_1">Ти можеш змінити стартові налаштування тестів</string>
-    <string name="settings_question">You can change settings or user.</string>
+    <string name="results">"Results of  "</string>
+    <string name="assistant_question_1">You can change settings or user. For this press and hold my picture</string>
+    <string name="settings_question">You can change settings or user. For this press and hold my picture</string>
     <string name="right_anser">This is the correct answer</string>
-    <string name="false_answer">Try again</string>
+    <string name="false_answer">Try again!</string>
     <string name="select_section">Please! Select a section</string>
     <string name="enter_your_name">ENTER NAME</string>
     <string name="entry_level_1">Level 1. You need to answer ten questions are not difficult. You have one hint. To view, click on the divine cow.</string>
@@ -32,7 +32,7 @@
     <string name="entry_level_7">LEVEL 7. You have one hint.</string>
     <string name="entry_level_8">LEVEL 8. You have one hint.</string>
     <string name="entry_level_9">LEVEL 9. You have one hint.</string>
-    <string name="entry_level_10">LEVEL !0. You have one hint.</string>
+    <string name="entry_level_10">LEVEL 10. You have one hint.</string>
     <string name="no_tips">Sorry! But you used all tips.</string>
     <string name="exit_the_training_mode">To exit the training mode, press return</string>
     <string name="ok">OK</string>
