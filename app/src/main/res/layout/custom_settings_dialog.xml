@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/custom_settings"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/button_new_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginRight="80dp"
+        android:layout_marginStart="80dp"
+        android:layout_weight="1"
+        android:background="@drawable/button_background"
+        android:padding="5dp"
+        android:text="NEW USER" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/spinner2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="5dp"
+        android:layout_marginRight="80dp"
+        android:layout_weight="1"
+        android:background="@drawable/button_background"
+        android:padding="5dp"
+        android:spinnerMode="dialog" />
+
+    <Button
+        android:id="@+id/button_change_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginRight="80dp"
+        android:layout_weight="1"
+        android:background="@drawable/button_background"
+        android:padding="5dp"
+        android:text="CHANGE USER" />
+
+    <Button
+        android:id="@+id/button_cklear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginRight="80dp"
+        android:layout_weight="1"
+        android:background="@drawable/button_background"
+        android:padding="5dp"
+        android:text="CKLER ALL SETTINGS" />
+
+    <Button
+        android:id="@+id/button_show_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginRight="80dp"
+        android:layout_weight="1"
+        android:background="@drawable/button_background"
+        android:padding="5dp"
+        android:text="SHOW RESULT" />
+
+</LinearLayout>

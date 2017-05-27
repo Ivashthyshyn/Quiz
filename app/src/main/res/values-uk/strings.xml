@@ -34,7 +34,7 @@
     <string name="ready">Готово</string>
     <string name="results">"Результати  "</string>
     <string name="right">Правильно</string>
-    <string name="right_anser">Це правильна відповідь!</string>
+    <string name="right_anser">"Правильна відповідь!  "</string>
     <string name="select_section">Будь-ласка! Виберіть розділ.</string>
     <string name="settings_question">Ти можеш змінити налаштування або користувача. Для цього натисни і утримуй моє зображення</string>
     <string name="two_errors">Незважаючи на помилки ви пройшли це рівень.</string>

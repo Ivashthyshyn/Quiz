@@ -43,4 +43,8 @@
     <string name="best_resolt">Congratulations! You passed the test flawlessly. You get access to the next level.</string>
     <string name="right">Right</string>
     <string name="not_right">Not right</string>
+    <string name="change_user">Change Usser</string>
+    <string name="new_user">New User</string>
+    <string name="celect_user">Celect User</string>
+    <string name="enter_user">Select user</string>
 </resources>

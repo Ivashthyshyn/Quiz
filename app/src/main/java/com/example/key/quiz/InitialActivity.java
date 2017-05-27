@@ -29,11 +29,15 @@ import com.example.key.quiz.database.QuizApplication;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.LongClick;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
+
 
 @EActivity
 public class InitialActivity extends AppCompatActivity {
@@ -109,7 +113,7 @@ public class InitialActivity extends AppCompatActivity {
     void trainingButtonWasClicked() {
         builder = new AlertDialog.Builder(InitialActivity.this);
         LinearLayout customDialog = (LinearLayout) getLayoutInflater()
-                .inflate(R.layout.custom_dialog, (LinearLayout)findViewById(R.id.customDialog));
+                .inflate(R.layout.custom_dialog, (LinearLayout)findViewById(R.id.custom_select_dialog));
         builder.setView(customDialog);
         Button buttonOrthography = (Button)customDialog.findViewById(R.id.buttonOrthography);
         buttonOrthography.setText(mContext.getResources().getString(R.string.orthography));
@@ -220,26 +224,7 @@ public class InitialActivity extends AppCompatActivity {
             // This a thread for load quiz.txt to quiz.assistantText
             loadingThread();
             // creating dialogue for user input his name
-            builder = new AlertDialog.Builder(this);
-            userNameInput = new EditText(this);
-            userNameInput.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-            View customTitle = getLayoutInflater().inflate(R.layout.custom_title,(LinearLayout)findViewById(R.id.customTitle));
-            builder.setCustomTitle(customTitle);
-            builder.setView(userNameInput);
-            builder.setPositiveButton(mContext.getResources().getString(R.string.ready),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            prefs.edit().putString("userName", userNameInput.getText().toString()).apply();
-                            prefs.edit().putInt(DIFFICULTY_LEVEL, LEVEL_1).apply();
-                            dialog.cancel();
-                            assistantImage.setVisibility(View.VISIBLE);
-                            Animation korovkaAnim = AnimationUtils.loadAnimation(mContext, R.anim.button_tread_anim);
-                            assistantImage.startAnimation(korovkaAnim);
-                            goAnimation();
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
+           showStartDialog();
 
 
         // TODO This is an upgrade
@@ -277,6 +262,7 @@ public class InitialActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.container, dialogFragment);
         fragmentTransaction.commit();
         dialogFragment.setAssistantTalk(textDialog);
+
         autoOff(dialogFragment);
     }
 
@@ -284,5 +270,76 @@ public class InitialActivity extends AppCompatActivity {
     void autoOff(DialogFragment dialogFragment) {
        fragmentManager.beginTransaction().remove(dialogFragment).commit();
     }
+
+    @LongClick(R.id.assistantImage)
+    void assistantWasLongClicked() {
+        builder = new AlertDialog.Builder(InitialActivity.this);
+        LinearLayout customSettingsDialog = (LinearLayout) getLayoutInflater()
+                .inflate(R.layout.custom_settings_dialog, (LinearLayout) findViewById(R.id.custom_settings));
+        builder.setView(customSettingsDialog);
+        Button buttonNewUser = (Button) customSettingsDialog.findViewById(R.id.button_new_user);
+        buttonNewUser.setText(mContext.getResources().getString(R.string.orthography));
+        buttonNewUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showStartDialog();
+                mAlert.cancel();
+            }
+        });
+        Button buttonChangeUser = (Button) customSettingsDialog.findViewById(R.id.button_change_user);
+        buttonChangeUser.setText(mContext.getResources().getString(R.string.purity_of_language));
+        buttonChangeUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mAlert.cancel();
+            }
+        });
+        Button buttonCklear = (Button) customSettingsDialog.findViewById(R.id.button_cklear);
+        buttonCklear.setText(mContext.getResources().getString(R.string.loanwords));
+        buttonCklear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToTrialActivity(TYPE_QUESTION_3);
+                mAlert.cancel();
+            }
+        });
+
+        mAlert = builder.create();
+        mAlert.show();
+    }
+
+    //   SettingsFragment settingsFragment = new SettingsFragment();
+     //  getFragmentManager().beginTransaction().add(R.id.container, settingsFragment).commit();
+
+        void showStartDialog(){
+        builder = new AlertDialog.Builder(this);
+        userNameInput = new EditText(this);
+        userNameInput.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        View customTitle = getLayoutInflater().inflate(R.layout.custom_title,(LinearLayout)findViewById(R.id.customTitle));
+        builder.setCustomTitle(customTitle);
+        builder.setView(userNameInput);
+        builder.setPositiveButton(mContext.getResources().getString(R.string.ready),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Set<String> user_name = new HashSet<String>();
+                        user_name.add(userNameInput.getText().toString());
+                        user_name.add(",e,e");
+                        user_name.add("lfkd");
+                        prefs.edit().putStringSet("userName1",user_name).apply();
+                        prefs.edit().putString("userName", userNameInput.getText().toString()).apply();
+                        prefs.edit().putInt(DIFFICULTY_LEVEL, LEVEL_1).apply();
+                        dialog.cancel();
+                        assistantImage.setVisibility(View.VISIBLE);
+                        Animation korovkaAnim = AnimationUtils.loadAnimation(mContext, R.anim.button_tread_anim);
+                        assistantImage.startAnimation(korovkaAnim);
+                        goAnimation();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
 
 }

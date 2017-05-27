@@ -33,7 +33,7 @@
     <string name="one_error">Вы допустили ошибку. Но это очень хороший результат! У вас есть следующий уровень.</string>
     <string name="results">"Результати  "</string>
     <string name="right">Правильно</string>
-    <string name="right_anser">Это правильный ответ!</string>
+    <string name="right_anser">"Правильный ответ!  "</string>
     <string name="select_section">Пожалуста! Выберите раздел.</string>
     <string name="settings_question">Ты можешь изменить настройки или пользователя. Для этого нажми и удерживай мое изображение</string>
     <string name="two_errors">Несмотря на ошибки, вы пройти этот уровень.</string>
