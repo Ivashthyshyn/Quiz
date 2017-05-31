@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import com.example.key.quiz.database.QuizApplication;
 import com.example.key.quiz.database.UserSuccess;
 import com.example.key.quiz.database.UserSuccessDao;
 
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.greenrobot.greendao.query.Query;
@@ -27,6 +29,8 @@ import java.util.List;
 
 import static com.example.key.quiz.InitialActivity.DIFFICULTY_LEVEL;
 import static com.example.key.quiz.InitialActivity.PREFS_NAME;
+import static com.example.key.quiz.TrialActivity.INTENT_DATE_VALUE;
+import static com.example.key.quiz.TrialActivity.INTENT_LEVEL_VALUE;
 
 @EActivity
 public class FinishActivity extends Activity implements View.OnClickListener {
@@ -38,11 +42,11 @@ public class FinishActivity extends Activity implements View.OnClickListener {
     public AlertDialog finishAlertDialog;
     private int mCounterWrongAnswers = 0;
 
-    @ViewById(R.id.result)
-    TextView rightAnswer;
+    private int mLevel;
 
     @ViewById(R.id.resultList)
     LinearLayout linearLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +54,10 @@ public class FinishActivity extends Activity implements View.OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_finish);
 
-        String mUserName = getIntent().getStringExtra("userNameInput");
-        long mDataQuiz = getIntent().getLongExtra("date",0);
-        int mLevel = getIntent().getIntExtra("level", 1);
+        //String mUserName = getIntent().getStringExtra(INTENT_NAME_VALUE);
+
+        long mDataQuiz = getIntent().getLongExtra(INTENT_DATE_VALUE, 0);
+        mLevel = getIntent().getIntExtra(INTENT_LEVEL_VALUE, 1);
         DaoSession daoSession = ((QuizApplication) getApplication()).getDaoSession();
         questionDao = daoSession.getQuestionDao();
         userSuccessDao = daoSession.getUserSuccessDao();
@@ -63,7 +68,6 @@ public class FinishActivity extends Activity implements View.OnClickListener {
 
         List<Question> listRightAnswer = rightAnswerQuery.list();
         List<UserSuccess> listUserAnswer = userAnswerQuery.list();
-        rightAnswer.setText(FinishActivity.this.getResources().getString(R.string.results)+" "+mUserName);
         for (int i = 0; i < listUserAnswer.size();i++) {
             Button button = new Button(this);
             button.setOnClickListener(this);
@@ -87,18 +91,24 @@ public class FinishActivity extends Activity implements View.OnClickListener {
             }
 
         }
+        if (savedInstanceState == null) {
+            showFinishAlertDialog();
+        }
+    }
+
+    private void showFinishAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(FinishActivity.this);
         LinearLayout customDialog = (LinearLayout) getLayoutInflater()
                 .inflate(R.layout.custom_finish_dialog, (LinearLayout)findViewById(R.id.custom_finish_dialog_root));
         TextView textGreeting = (TextView)customDialog.findViewById(R.id.textGreetings);
-        Button medal = (Button)customDialog.findViewById(R.id.medal);
+
+        ImageView medal = (ImageView)customDialog.findViewById(R.id.medal);
+        medal.setBackgroundResource(R.drawable.ic_medal);
         Button buttonOk = (Button)customDialog.findViewById(R.id.buttonOk);
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intentInitial = new Intent(FinishActivity.this,InitialActivity_.class);
-                startActivity(intentInitial);
+                goToMainActivity();
             }
         });
         Button buttonViewResult = (Button)customDialog.findViewById(R.id.buttonViewResult);
@@ -121,9 +131,14 @@ public class FinishActivity extends Activity implements View.OnClickListener {
         builder.setView(customDialog);
         finishAlertDialog = builder.create();
         finishAlertDialog.show();
-        if (mLevel !=9) {
-            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            prefs.edit().putInt(DIFFICULTY_LEVEL, mLevel + 1).apply();
+    }
+
+    private void goToMainActivity() {
+        if (mLevel != 9) {
+            SharedPreferences mPrefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            mPrefs.edit().putInt(DIFFICULTY_LEVEL, mLevel + 1).apply();
+            Intent intentInitial = new Intent(FinishActivity.this, InitialActivity_.class);
+            startActivity(intentInitial);
         }
     }
 
@@ -131,6 +146,11 @@ public class FinishActivity extends Activity implements View.OnClickListener {
     public void onClick(View button) {
         Question question = questionDao.load((long)button.getId());
         Toast.makeText(getApplication(),question.getQuestions()
-                + "Правильна відповідь " + question.getRightAnswer(), Toast.LENGTH_SHORT).show();
+                + "Правильна відповідь " + question.getRightAnswer(), Toast.LENGTH_LONG).show();
+    }
+
+    @Click(R.id.button_back_to_main_activity)
+    public void floatingButtonWasClicked(){
+        goToMainActivity();
     }
 }

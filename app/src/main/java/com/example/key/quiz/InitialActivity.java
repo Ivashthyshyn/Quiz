@@ -13,10 +13,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.key.quiz.database.Answer;
@@ -43,6 +46,9 @@ import java.util.Set;
 public class InitialActivity extends AppCompatActivity {
 
     public static final  String PREFS_NAME = "MyPrefsFile";
+    public static final  String PREFS_LIST_NAME_VALUE = "userNameList";
+    public static final  String TYPE_QUESTION = "typeQuestion";
+    public static final  String PREFS_NAME_VALUE = "userName";
     public static final int TYPE_QUESTION_0 = 0;
     public static final int TYPE_QUESTION_1 = 1;
     public static final int TYPE_QUESTION_2 = 2;
@@ -63,23 +69,24 @@ public class InitialActivity extends AppCompatActivity {
     public static final int LEVEL_8 = 8;
     public static final int LEVEL_9 = 9;
     public static final int LEVEL_10 = 10;
-    public final String PREF_VERSION_CODE_KEY = "version_code";
-    public final int DOESNT_EXIST = -1;
+    public static final String PREF_VERSION_CODE_KEY = "version_code";
+    public static final int DOESNT_EXIST = -1;
     public int currentVersionCode = BuildConfig.VERSION_CODE;
     public QuestionDao questionDao;
     public AnswerDao answerDao;
     public SharedPreferences prefs;
     public  AlertDialog.Builder builder;
-    public DialogFragment dialogFragment;
+    public AssistantDialogFragment dialogFragment;
+    public FragmentManager fragmentManager;
     private Context mContext = InitialActivity.this;
     private Long mQuestionId;
     private AlertDialog mAlert;
     private  EditText userNameInput;
+    private Set<String> mUserNameList;
+    private Spinner mUserNameSpinner;
 
     @ViewById(R.id.assistantImage)
     ImageView assistantImage;
-    FragmentManager fragmentManager;
-
 
     @ViewById(R.id.button_training)
     Button buttonTraining;
@@ -93,19 +100,18 @@ public class InitialActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_initial);
         checkFirstRun();
-
-
     }
 
    @Click(R.id.startQuizButton)
    void startQuizButtonWasClicked(){
        goToTrialActivity(TYPE_QUESTION_0);
    }
-
-
-    private void goToTrialActivity(int TYPE_QUESTION) {
+    private void goToTrialActivity(int typeQuestion) {
+        if(dialogFragment != null){
+            dialogFragment.dismiss();
+        }
         Intent intentTrialActivity = new Intent(InitialActivity.this, TrialActivity_.class);
-        intentTrialActivity.putExtra("TYPE_QUESTION",TYPE_QUESTION);
+        intentTrialActivity.putExtra(TYPE_QUESTION,typeQuestion);
         startActivity(intentTrialActivity);
     }
 
@@ -146,6 +152,9 @@ public class InitialActivity extends AppCompatActivity {
         mAlert.show();
     }
 
+    /**
+     * this background stream downloads the assets data in the table
+     */
     @Background
     void loadingThread(){
         DaoSession daoSession = ((QuizApplication)getApplication()).getDaoSession();
@@ -226,13 +235,13 @@ public class InitialActivity extends AppCompatActivity {
             // creating dialogue for user input his name
            showStartDialog();
 
-
-        // TODO This is an upgrade
-        //} else if (currentVersionCode > savedVersionCode) {
         }
 
     }
 
+    /**
+     * start animation with buttons and assistant Korovka
+     */
     private void goAnimation() {
         assistantImage.setVisibility(View.VISIBLE);
         buttonTraining.setVisibility(View.VISIBLE);
@@ -241,36 +250,46 @@ public class InitialActivity extends AppCompatActivity {
         buttonTraining.startAnimation(button1Visible);
         Animation button2Visible = AnimationUtils.loadAnimation(this, R.anim.button_start_anim);
         startQuizButton.startAnimation(button2Visible);
-
-
     }
-
 
     @Click(R.id.assistantImage)
     void assistantWasClicked(){
         showAssistantDialog(mContext.getResources().getString(R.string.settings_question));
     }
 
+    /**
+     *  that method displays messages assistant
+     * @param textDialog is a text content messages assistant
+     */
     private void showAssistantDialog(String textDialog) {
+
         fragmentManager = getSupportFragmentManager();
         if(dialogFragment != null) {
             fragmentManager.beginTransaction().remove(dialogFragment).commit();
         }
-        dialogFragment = new DialogFragment_();
+        dialogFragment = new AssistantDialogFragment_();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager
                 .beginTransaction();
         fragmentTransaction.add(R.id.container, dialogFragment);
         fragmentTransaction.commit();
         dialogFragment.setAssistantTalk(textDialog);
-
         autoOff(dialogFragment);
     }
 
+    /**
+     * This is a method which clears the message display assistant over time
+     * @param dialogFragment is a fragment want to delete
+     */
     @Background(delay=2000)
-    void autoOff(DialogFragment dialogFragment) {
-       fragmentManager.beginTransaction().remove(dialogFragment).commit();
+    void autoOff(AssistantDialogFragment dialogFragment) {
+        if ( dialogFragment!= null ) {
+                dialogFragment.dismiss();
+            }
     }
 
+    /**
+     * this display the settings menu
+     */
     @LongClick(R.id.assistantImage)
     void assistantWasLongClicked() {
         builder = new AlertDialog.Builder(InitialActivity.this);
@@ -278,7 +297,6 @@ public class InitialActivity extends AppCompatActivity {
                 .inflate(R.layout.custom_settings_dialog, (LinearLayout) findViewById(R.id.custom_settings));
         builder.setView(customSettingsDialog);
         Button buttonNewUser = (Button) customSettingsDialog.findViewById(R.id.button_new_user);
-        buttonNewUser.setText(mContext.getResources().getString(R.string.orthography));
         buttonNewUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -286,32 +304,36 @@ public class InitialActivity extends AppCompatActivity {
                 mAlert.cancel();
             }
         });
-        Button buttonChangeUser = (Button) customSettingsDialog.findViewById(R.id.button_change_user);
-        buttonChangeUser.setText(mContext.getResources().getString(R.string.purity_of_language));
-        buttonChangeUser.setOnClickListener(new View.OnClickListener() {
+        mUserNameSpinner = (Spinner)customSettingsDialog.findViewById(R.id.spiner_seleckt_user);
+        Set<String> list =  prefs.getStringSet(PREFS_LIST_NAME_VALUE,new HashSet<String>());
+        String[] list1 = list.toArray(new String[list.size()]);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,  android.R.layout.simple_spinner_item, list1);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mUserNameSpinner.setAdapter(adapter);
+        mUserNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                prefs.edit().putString(PREFS_NAME_VALUE, String.valueOf(mUserNameSpinner.getSelectedItem())).apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        Button buttonClear = (Button) customSettingsDialog.findViewById(R.id.button_clear);
+        buttonClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                mAlert.cancel();
             }
         });
-        Button buttonCklear = (Button) customSettingsDialog.findViewById(R.id.button_cklear);
-        buttonCklear.setText(mContext.getResources().getString(R.string.loanwords));
-        buttonCklear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToTrialActivity(TYPE_QUESTION_3);
-                mAlert.cancel();
-            }
-        });
-
         mAlert = builder.create();
         mAlert.show();
     }
 
-    //   SettingsFragment settingsFragment = new SettingsFragment();
-     //  getFragmentManager().beginTransaction().add(R.id.container, settingsFragment).commit();
-
+    /**
+     * this is a start Alert dialog with the assistant and change user Alert dialog
+     */
         void showStartDialog(){
         builder = new AlertDialog.Builder(this);
         userNameInput = new EditText(this);
@@ -322,24 +344,19 @@ public class InitialActivity extends AppCompatActivity {
         builder.setPositiveButton(mContext.getResources().getString(R.string.ready),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Set<String> user_name = new HashSet<String>();
-                        user_name.add(userNameInput.getText().toString());
-                        user_name.add(",e,e");
-                        user_name.add("lfkd");
-                        prefs.edit().putStringSet("userName1",user_name).apply();
-                        prefs.edit().putString("userName", userNameInput.getText().toString()).apply();
+                        mUserNameList = prefs.getStringSet(PREFS_LIST_NAME_VALUE,new HashSet<String>());
+                        prefs.edit().putString(PREFS_NAME_VALUE, userNameInput.getText().toString()).apply();
                         prefs.edit().putInt(DIFFICULTY_LEVEL, LEVEL_1).apply();
+                        mUserNameList.add(userNameInput.getText().toString());
+                        prefs.edit().putStringSet(PREFS_LIST_NAME_VALUE, mUserNameList).apply();
                         dialog.cancel();
                         assistantImage.setVisibility(View.VISIBLE);
-                        Animation korovkaAnim = AnimationUtils.loadAnimation(mContext, R.anim.button_tread_anim);
-                        assistantImage.startAnimation(korovkaAnim);
+                        Animation ladybugAnim = AnimationUtils.loadAnimation(mContext, R.anim.button_tread_anim);
+                        assistantImage.startAnimation(ladybugAnim);
                         goAnimation();
                     }
                 });
         AlertDialog alert = builder.create();
         alert.show();
     }
-
-
-
 }

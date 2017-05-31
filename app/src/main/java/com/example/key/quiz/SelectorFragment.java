@@ -145,7 +145,7 @@ public class SelectorFragment extends Fragment implements RadioGroup.OnCheckedCh
     @Override
     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
 
-        if (group != null && changeGroupFlag == false) {
+        if (group != null && !changeGroupFlag) {
             if (group == radioGroup1) {
                 changeGroupFlag =true;
                 RadioButton pressedButton = (RadioButton) group.findViewById(checkedId);

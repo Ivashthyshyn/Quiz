@@ -41,6 +41,7 @@ import static com.example.key.quiz.InitialActivity.LEVEL_7;
 import static com.example.key.quiz.InitialActivity.LEVEL_8;
 import static com.example.key.quiz.InitialActivity.LEVEL_9;
 import static com.example.key.quiz.InitialActivity.PREFS_NAME;
+import static com.example.key.quiz.InitialActivity.TYPE_QUESTION;
 import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_0;
 import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_1;
 import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_2;
@@ -49,14 +50,16 @@ import static com.example.key.quiz.InitialActivity.TYPE_QUESTION_3;
 @EActivity
 public class TrialActivity extends AppCompatActivity implements Communicator{
     private static final String SAVE_QUESTION_NUMBER = "questionNumber";
+    private static final String SAVE_USER_ANSWER = "userAnswer";
+    private static final String SAVE_DATE_QUIZ = "dateQuiz";
+    public static final String INTENT_NAME_VALUE = "userNameInput";
+    public static final String INTENT_LEVEL_VALUE = "level";
+    public static final String INTENT_DATE_VALUE = "date";
     public String userName;
     public QuestionDao questionDao;
     public AnswerDao answerDao;
     public UserSuccessDao userSuccessDao;
-
-    @ViewById(R.id.textQuestion)
-    public TextView textQuestion;
-    public DialogFragment dialogFragment;
+    public AssistantDialogFragment dialogFragment;
     public FragmentManager fragmentManager;
     public SelectorFragment selectorFragment;
     public Query<Answer> answerQuery;
@@ -73,20 +76,29 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
     private int mTypeQuestion;
     private Context mTrialContext = TrialActivity.this;
     private int mCounterTips = 0;
+    private Bundle mSavedInstanceState = null;
     @ViewById (R.id.next_button)
     Button nextButton;
+
     @ViewById(R.id.back_button)
     Button beckButton;
+
+    @ViewById(R.id.textQuestion)
+    TextView textQuestion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSavedInstanceState = savedInstanceState;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_trial);
         if (savedInstanceState != null) {
             mQuestionNumber = savedInstanceState.getInt(SAVE_QUESTION_NUMBER, 0);
+            mData = savedInstanceState.getString(SAVE_USER_ANSWER, "");
+            dateLong = savedInstanceState.getLong(SAVE_DATE_QUIZ, 0);
+        }else {
+            getDateQuiz();
         }
-        getDateQuiz();
         DaoSession daoSession = ((QuizApplication) getApplication()).getDaoSession();
         questionDao = daoSession.getQuestionDao();
         answerDao = daoSession.getAnswerDao();
@@ -95,7 +107,7 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
         selectorFragment = (SelectorFragment) fragmentManager.findFragmentById(R.id.fragment_selector);
 
         // get data with InitialActivity
-        mTypeQuestion = getIntent().getIntExtra("TYPE_QUESTION",0);
+        mTypeQuestion = getIntent().getIntExtra(TYPE_QUESTION,0);
         switch (mTypeQuestion){
             case TYPE_QUESTION_0:
                 changeLevelQuiz();
@@ -130,14 +142,14 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
                 updateFragment();
                 break;
         }
-
-
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(SAVE_QUESTION_NUMBER, mQuestionNumber);
+        outState.putString(SAVE_USER_ANSWER, mData);
+        outState.putLong(SAVE_DATE_QUIZ, dateLong);
     }
 
     @Click(R.id.next_button)
@@ -154,15 +166,14 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
             updateFragment();
         }else {
             Intent intentFinishActivity = new Intent(TrialActivity.this,FinishActivity_.class);
-            intentFinishActivity.putExtra("userNameInput",userName);
-            intentFinishActivity.putExtra("date", dateLong);
-            intentFinishActivity.putExtra("level", mLevelQuiz);
+            intentFinishActivity.putExtra(INTENT_NAME_VALUE,userName);
+            intentFinishActivity.putExtra(INTENT_DATE_VALUE, dateLong);
+            intentFinishActivity.putExtra(INTENT_LEVEL_VALUE, mLevelQuiz);
             startActivity(intentFinishActivity);
         }
     }
     @Click(R.id.back_button)
     void backButtonWasClicked(){
-
         if (mQuestionNumber > 1) {
             mQuestionNumber = mQuestionNumber - 1;
             updateFragment();
@@ -177,40 +188,41 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
     private void changeLevelQuiz() {
         mPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         mLevelQuiz = mPreferences.getInt(DIFFICULTY_LEVEL,mLevelQuiz);
-        switch (mLevelQuiz){
-            case LEVEL_1:
-                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_1));
-                break;
-            case LEVEL_2:
-                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_2));
-                break;
-            case LEVEL_3:
-                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_3));
-                break;
-            case LEVEL_4:
-                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_4));
-                break;
-            case LEVEL_5:
-                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_5));
-                break;
-            case LEVEL_6:
-                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_6));
-                break;
-            case LEVEL_7:
-                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_7));
-                break;
-            case LEVEL_8:
-                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_8));
-                break;
-            case LEVEL_9:
-                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_9));
-                break;
-            case LEVEL_10:
-                showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_10));
-                break;
+        if (mSavedInstanceState == null) {
+            switch (mLevelQuiz) {
+                case LEVEL_1:
+                    showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_1));
+                    break;
+                case LEVEL_2:
+                    showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_2));
+                    break;
+                case LEVEL_3:
+                    showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_3));
+                    break;
+                case LEVEL_4:
+                    showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_4));
+                    break;
+                case LEVEL_5:
+                    showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_5));
+                    break;
+                case LEVEL_6:
+                    showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_6));
+                    break;
+                case LEVEL_7:
+                    showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_7));
+                    break;
+                case LEVEL_8:
+                    showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_8));
+                    break;
+                case LEVEL_9:
+                    showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_9));
+                    break;
+                case LEVEL_10:
+                    showAssistantDialog(mTrialContext.getResources().getString(R.string.entry_level_10));
+                    break;
+            }
         }
-
-         }
+    }
 
     /**
      * This updates fragment for each new question and loads the correct answer
@@ -282,7 +294,7 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
         if(dialogFragment != null) {
             fragmentManager.beginTransaction().remove(dialogFragment).commit();
         }
-            dialogFragment = new DialogFragment_();
+            dialogFragment = new AssistantDialogFragment();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager
                     .beginTransaction();
             fragmentTransaction.add(R.id.container, dialogFragment);
@@ -292,7 +304,9 @@ public class TrialActivity extends AppCompatActivity implements Communicator{
 
     }
     @Background(delay=4000)
-    void autoOff(DialogFragment fragment) {
-        fragmentManager.beginTransaction().remove(fragment).commit();
+    void autoOff(AssistantDialogFragment fragment) {
+        if (fragment != null) {
+            fragment.dismiss();
+        }
     }
 }
