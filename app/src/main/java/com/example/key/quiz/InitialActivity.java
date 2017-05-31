@@ -307,7 +307,7 @@ public class InitialActivity extends AppCompatActivity {
         mUserNameSpinner = (Spinner)customSettingsDialog.findViewById(R.id.spiner_seleckt_user);
         Set<String> list =  prefs.getStringSet(PREFS_LIST_NAME_VALUE,new HashSet<String>());
         String[] list1 = list.toArray(new String[list.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,  android.R.layout.simple_spinner_item, list1);
+         ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,  android.R.layout.simple_spinner_item, list1);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mUserNameSpinner.setAdapter(adapter);
         mUserNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -324,7 +324,11 @@ public class InitialActivity extends AppCompatActivity {
         buttonClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mUserNameList = prefs.getStringSet(PREFS_LIST_NAME_VALUE,new HashSet<String>());
+                mUserNameList.clear();
+                prefs.edit().putStringSet(PREFS_LIST_NAME_VALUE, mUserNameList).apply();
+                showStartDialog();
+                mAlert.dismiss();
             }
         });
         mAlert = builder.create();

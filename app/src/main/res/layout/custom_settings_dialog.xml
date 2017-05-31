@@ -52,17 +52,6 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button_change_user"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_marginRight="80dp"
-        android:layout_weight="1"
-        android:background="@drawable/button_background"
-        android:padding="5dp"
-        android:text="CHANGE USER" />
-
-    <Button
         android:id="@+id/button_clear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
