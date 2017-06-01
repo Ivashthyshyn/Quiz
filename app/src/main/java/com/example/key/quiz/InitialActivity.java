@@ -328,7 +328,6 @@ public class InitialActivity extends AppCompatActivity {
                 mUserNameList.clear();
                 prefs.edit().putStringSet(PREFS_LIST_NAME_VALUE, mUserNameList).apply();
                 showStartDialog();
-                mAlert.dismiss();
             }
         });
         mAlert = builder.create();
